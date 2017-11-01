@@ -12,7 +12,7 @@ namespace CourierHelper.BusinessLogic.DTO
         public double Longitude { get; set; }
         public double Latitude { get; set; }
 
-        public PointDto Before { get; set; }
+        public PointDto After { get; set; }
 
         public override string ToString()
         {

@@ -6,6 +6,7 @@ namespace CourierHelper.DataAccess.Enums
 {
     public enum CourierState
     {
+		NotAccessible,
         Idle,
         OnWarehouse,
         PerformsDelivery,

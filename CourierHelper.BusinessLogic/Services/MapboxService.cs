@@ -71,7 +71,7 @@ namespace CourierHelper.BusinessLogic.Services
             }
         }
 
-        public async Task<IEnumerable<PointDto>> BuildRouteAsync(IEnumerable<PointDto> points)
+        public async Task<RouteCandidate> BuildRouteAsync(IEnumerable<PointDto> points)
         {
             string pointsString = string.Join(";", points.Select(point => point.ToString()));
 
@@ -93,11 +93,15 @@ namespace CourierHelper.BusinessLogic.Services
                         throw new Exception(content.Code); //todo: beter exception
                     }
 
-                    return content.Routes[0].Geometry.Coordinates.Select(coordinate => new PointDto()
+                    var routePoints = content.Routes[0].Geometry.Coordinates.Select(coordinate => new PointDto()
                     {
                         Longitude = coordinate[0],
                         Latitude = coordinate[1]
                     });
+
+					var route = new RouteCandidate(routePoints, content.Routes[0].Distance);
+
+					return route;
                 }
                 throw new Exception(); //todo: beter exception
             }
@@ -109,16 +113,16 @@ namespace CourierHelper.BusinessLogic.Services
 
             for (int i = 0; i < points.Length; i++)
             {
-                if (points[i].Before != null)
+                if (points[i].After != null)
                 {
-                    int index = Array.IndexOf(points, points[i].Before);
+                    int index = Array.IndexOf(points, points[i].After);
 
                     if (index < 0)
                     {
                         throw new Exception(); //todo: better exception
                     }
 
-                    distributions.Add($"{i},{index}");
+                    distributions.Add($"{index},{i}");
                 }
             }
 

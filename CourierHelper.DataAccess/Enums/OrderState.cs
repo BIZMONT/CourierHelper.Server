@@ -7,6 +7,7 @@ namespace CourierHelper.DataAccess.Enums
     public enum OrderState
     {
         NotAssigned,
+		Assignment,
         WaitingOnWarehouse,
         Fulfillment,
         Completed
