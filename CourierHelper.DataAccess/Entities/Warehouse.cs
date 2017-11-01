@@ -9,7 +9,7 @@ namespace CourierHelper.DataAccess.Entities
 
 
         #region Relations
-        public virtual IEnumerable<Order> Orders { get; set; } = new List<Order>();
+        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
         public virtual ActivePoint Location { get; set; }
         #endregion

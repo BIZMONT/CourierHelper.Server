@@ -16,8 +16,8 @@ namespace CourierHelper.DataAccess.Entities
 
 
         #region Relations
-        public virtual IEnumerable<Order> OrdersAsSender { get; set; } = new List<Order>();
-        public virtual IEnumerable<Order> OrdersAsReceiver { get; set; } = new List<Order>();
+        public virtual ICollection<Order> OrdersAsSender { get; set; } = new List<Order>();
+        public virtual ICollection<Order> OrdersAsReceiver { get; set; } = new List<Order>();
         #endregion
     }
 }

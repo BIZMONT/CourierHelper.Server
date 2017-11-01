@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CourierHelper.BusinessLogic.Abstract;
 using CourierHelper.BusinessLogic.DTO;
 using CourierHelper.BusinessLogic.DTO.Enums;
 using CourierHelper.DataAccess;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CourierHelper.BusinessLogic.Services
 {
-	public class OrderService
+	public class OrderService : ServiceBase
 	{
 		public string _connectionString;
 
@@ -50,29 +51,6 @@ namespace CourierHelper.BusinessLogic.Services
 			}
 		}
 
-		public PointDto GetOrderLocation(long orderId)
-		{
-			using (var db = new CourierHelperDb(_connectionString))
-			{
-				var order = db.OrdersRepo.Query.FirstOrDefault(o => o.Id == orderId);
-
-				if(order == null)
-				{
-					throw new ArgumentOutOfRangeException("The order with this id does not exist!");
-				}
-
-				var orderPoint = order.Destination;
-				var orderPointDto = Mapper.Map<PointDto>(orderPoint);   //todo: automapper config
-
-				var warehousePoint = order.Warehouse.Location;
-				var warehousePointDto = Mapper.Map<PointDto>(warehousePoint);   //todo: automapper config
-
-				orderPointDto.After = warehousePointDto;
-
-				return orderPointDto;
-			}
-		}
-
 		public async Task ChangeOrderStateAsync(OrderDto orderDto, OrderStateDto state)
 		{
 			using (var db = new CourierHelperDb(_connectionString))
@@ -91,11 +69,6 @@ namespace CourierHelper.BusinessLogic.Services
 
 				orderDto.State = state;
 			}
-		}
-
-		public PointDto GetWarehouseLocation(long id)
-		{
-			throw new NotImplementedException();
 		}
 	}
 }

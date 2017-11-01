@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CourierHelper.BusinessLogic.Abstract;
 using CourierHelper.BusinessLogic.DTO;
 using CourierHelper.DataAccess;
 using CourierHelper.DataAccess.Entities;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CourierHelper.BusinessLogic.Services
 {
-	public class CourierService
+	public class CourierService : ServiceBase
 	{
 		public string _connectionString;
 
@@ -78,14 +79,24 @@ namespace CourierHelper.BusinessLogic.Services
 			}
 		}
 
-		public void AssignOrder(Guid id1, long id2)
+		public async Task AssignOrder(Guid courierId, long orderId)
 		{
-			throw new NotImplementedException();
-		}
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
+				Order order = db.OrdersRepo.Query.FirstOrDefault(o => o.Id == orderId);
 
-		public void UpdateRecomendedRoute(IEnumerable<PointDto> routePoints)
-		{
-			throw new NotImplementedException();
+				if(courier == null || order == null)
+				{
+					throw new ArgumentOutOfRangeException(""); //todo: exception
+				}
+
+				courier.Orders.Add(order);
+
+				db.CouriersRepo.Update(courier);
+
+				await db.SaveAsync();
+			}
 		}
 
 		public RouteDto GetCourierCurrentRoute(Guid id)

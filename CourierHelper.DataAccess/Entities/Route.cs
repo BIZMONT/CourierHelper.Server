@@ -10,7 +10,7 @@ namespace CourierHelper.DataAccess.Entities
 		public double Distance { get; set; }
 
         #region Relations
-        public virtual IEnumerable<ActivePoint> Points { get; set; } = new List<ActivePoint>();
+        public virtual ICollection<ActivePoint> Points { get; set; } = new List<ActivePoint>();
 
         public virtual Courier Courier { get; set; }
         #endregion

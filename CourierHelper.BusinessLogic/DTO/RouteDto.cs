@@ -8,7 +8,7 @@ namespace CourierHelper.BusinessLogic.DTO
 {
 	public class RouteDto
 	{
-		public Guid id { get; set; }
+		public Guid Id { get; set; }
 
 		public double Distance { get; set; }
 	}
