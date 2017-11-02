@@ -14,6 +14,8 @@ namespace CourierHelper.DataAccess.Entities
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
 
+		public DateTime? Deleted { get; set; }
+
 
         #region Relations
         public virtual ICollection<Order> OrdersAsSender { get; set; } = new List<Order>();

@@ -1,5 +1,6 @@
 ﻿using CourierHelper.DataAccess.Abstract;
 using CourierHelper.DataAccess.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -30,7 +31,8 @@ namespace CourierHelper.DataAccess.Repositories
 
         public void Delete(Customer entity)
         {
-            _dbContext.Customers.Remove(entity);
+			entity.Deleted = DateTime.Now;
+			Update(entity);
         }
 
         public void Delete(object key)
@@ -45,7 +47,7 @@ namespace CourierHelper.DataAccess.Repositories
 
         public IEnumerable<Customer> GetAll()
         {
-            return _dbContext.Customers.AsEnumerable();
+            return _dbContext.Customers.Where(c=>c.Deleted == null).AsEnumerable();
         }
 
         public void Update(Customer entity)

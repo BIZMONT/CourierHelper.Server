@@ -29,6 +29,7 @@ namespace CourierHelper.DataAccess.Entities
 
         public virtual Order Order { get; set; }
 
+		public Guid RouteId { get; set; }
         public virtual Route Route { get; set; }
 
         public virtual Warehouse Warehouse { get; set; }

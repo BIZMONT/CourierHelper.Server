@@ -11,6 +11,7 @@ namespace CourierHelper.DataAccess.Entities
         #region Relations
         public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
+		public Guid LocationId { get; set; }
         public virtual ActivePoint Location { get; set; }
         #endregion
     }
