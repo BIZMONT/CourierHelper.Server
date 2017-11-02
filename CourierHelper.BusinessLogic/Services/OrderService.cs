@@ -3,6 +3,7 @@ using CourierHelper.BusinessLogic.Abstract;
 using CourierHelper.BusinessLogic.DTO;
 using CourierHelper.BusinessLogic.DTO.Enums;
 using CourierHelper.DataAccess;
+using CourierHelper.DataAccess.Entities;
 using CourierHelper.DataAccess.Enums;
 using System;
 using System.Collections.Generic;

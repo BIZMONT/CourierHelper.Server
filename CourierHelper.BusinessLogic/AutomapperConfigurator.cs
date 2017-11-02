@@ -10,14 +10,23 @@ namespace CourierHelper.BusinessLogic
 
 		public static void Configure()
 		{
-			if(_configured)
+			if (_configured)
 			{
 				return;
 			}
 
-			Mapper.Initialize(cfg => {
-				cfg.CreateMap<Order, OrderDto>()
+			Mapper.Initialize(cfg =>
+			{
+				cfg.CreateMap<Customer, CustomerDto>()
 					.ReverseMap();
+
+				cfg.CreateMap<Order, OrderDto>()
+					.ReverseMap()
+					.ForMember(o => o.Courier, opt => opt.Ignore())
+					.ForMember(o => o.Destination, opt => opt.Ignore())
+					.ForMember(o => o.Receiver, opt => opt.Ignore())
+					.ForMember(o => o.Sender, opt => opt.Ignore())
+					.ForMember(o => o.Destination, opt => opt.Ignore());
 
 				cfg.CreateMap<ActivePoint, PointDto>()
 					.ReverseMap();

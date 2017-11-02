@@ -14,6 +14,12 @@ namespace CourierHelper.BusinessLogic.DTO
 
 		public OrderStateDto State { get; set; }
 
+		public Guid SenderId { get; set; }
+		public Guid ReceiverId { get; set; }
+		public int WarehouseId { get; set; }
+		public Guid CourierId { get; set; }
+		public Guid DestinationId { get; set; }
+
 		public bool Equals(OrderDto other)
 		{
 			if(Id == default(long) || other.Id == default(long))

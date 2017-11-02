@@ -49,6 +49,7 @@
     <Compile Include="Abstract\ServiceBase.cs" />
     <Compile Include="AutomapperConfigurator.cs" />
     <Compile Include="DTO\Courier\CourierDto.cs" />
+    <Compile Include="DTO\CustomerDto.cs" />
     <Compile Include="DTO\Enums\CourierStateDto.cs" />
     <Compile Include="DTO\Enums\OrderStateDto.cs" />
     <Compile Include="DTO\Order\OrderDto.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Infrastructure\OrderManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CourierService.cs" />
+    <Compile Include="Services\CustomerService.cs" />
     <Compile Include="Services\MapboxService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\PointService.cs" />
