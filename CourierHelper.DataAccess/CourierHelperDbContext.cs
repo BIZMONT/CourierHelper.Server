@@ -39,46 +39,39 @@ namespace CourierHelper.DataAccess
 
 			modelBuilder.Entity<Courier>()
 				.HasOptional(c => c.ActiveRoute)
-				.WithRequired(r => r.Courier)
-				.Map(m => m.MapKey("CourierId"));
+				.WithRequired(r => r.Courier);
 			#endregion
 
 			#region Order relations
 			modelBuilder.Entity<Order>()
 				.HasRequired(o => o.Warehouse)
-				.WithMany(w => w.Orders)
-				.HasForeignKey(o => o.WarehouseId);
+				.WithMany(w => w.Orders);
 
 			modelBuilder.Entity<Order>()
 				.HasRequired(o => o.Receiver)
 				.WithMany(r => r.OrdersAsReceiver)
-				.HasForeignKey(o => o.ReceiverId)
 				.WillCascadeOnDelete(false);
 
 			modelBuilder.Entity<Order>()
 				.HasRequired(o => o.Sender)
 				.WithMany(r => r.OrdersAsSender)
-				.HasForeignKey(o => o.SenderId)
 				.WillCascadeOnDelete(false);
 
 			modelBuilder.Entity<Order>()
 				.HasRequired(o => o.Destination)
-				.WithOptional(ap => ap.Order)
-				.Map(m => m.MapKey("DestinationId"));
+				.WithOptional(ap => ap.Order);
 			#endregion
 
 			#region Warehouse relations
 			modelBuilder.Entity<Warehouse>()
 				.HasRequired(w => w.Location)
-				.WithOptional(ap => ap.Warehouse)
-				.Map(m => m.MapKey("LocationId"));
+				.WithOptional(ap => ap.Warehouse);
 
 			#endregion
 
 			modelBuilder.Entity<Route>()
 				.HasMany(r => r.Points)
-				.WithOptional(ap => ap.Route)
-				.HasForeignKey(ap => ap.RouteId);
+				.WithOptional(ap => ap.Route);
 			#endregion
 
 			base.OnModelCreating(modelBuilder);

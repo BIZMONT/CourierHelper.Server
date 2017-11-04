@@ -17,8 +17,17 @@ namespace CourierHelper.BusinessLogic
 
 			Mapper.Initialize(cfg =>
 			{
+				cfg.CreateMap<Point, PointDto>()
+					.ForMember(p => p.After, opt => opt.Ignore())
+				.ReverseMap();
+
 				cfg.CreateMap<Customer, CustomerDto>()
-					.ReverseMap();
+				.ReverseMap();
+
+				cfg.CreateMap<Warehouse, WarehouseDto>()
+					.ForMember(w => w.Location, opt => opt.MapFrom(w => w.Location.Coordinates));
+
+				//Not checked
 
 				cfg.CreateMap<Order, OrderDto>()
 					.ReverseMap()
@@ -27,9 +36,6 @@ namespace CourierHelper.BusinessLogic
 					.ForMember(o => o.Receiver, opt => opt.Ignore())
 					.ForMember(o => o.Sender, opt => opt.Ignore())
 					.ForMember(o => o.Destination, opt => opt.Ignore());
-
-				cfg.CreateMap<ActivePoint, PointDto>()
-					.ReverseMap();
 
 				cfg.CreateMap<Courier, CourierDto>()
 					.ReverseMap();

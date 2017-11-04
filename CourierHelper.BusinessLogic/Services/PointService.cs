@@ -2,6 +2,7 @@
 using CourierHelper.BusinessLogic.Abstract;
 using CourierHelper.BusinessLogic.DTO;
 using CourierHelper.DataAccess;
+using CourierHelper.DataAccess.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,35 +31,16 @@ namespace CourierHelper.BusinessLogic.Services
 					throw new ArgumentOutOfRangeException("The order with this id does not exist!");
 				}
 
-				var orderPoint = order.Destination;
-				var orderPointDto = Mapper.Map<PointDto>(orderPoint);
+				Point orderPoint = order.Destination.Coordinates;
+				PointDto orderPointDto = Mapper.Map<PointDto>(orderPoint);
 
-				var warehousePoint = order.Warehouse.Location;
-				var warehousePointDto = Mapper.Map<PointDto>(warehousePoint);
+				Point warehousePoint = order.Warehouse.Location.Coordinates;
+				PointDto warehousePointDto = Mapper.Map<PointDto>(warehousePoint);
 
 				orderPointDto.After = warehousePointDto;
 
 				return orderPointDto;
 			}
 		}
-
-		public PointDto GetWarehouseLocation(long warehouseId)
-		{
-			using (var db = new CourierHelperDb(_connectionString))
-			{
-				var warehouse = db.WarehousesRepo.Query.FirstOrDefault(o => o.Id == warehouseId);
-
-				if (warehouse == null)
-				{
-					throw new ArgumentOutOfRangeException("The warehouse with this id does not exist!");
-				}
-
-				var warehousePoint = warehouse.Location;
-				var warehousePointDto = Mapper.Map<PointDto>(warehousePoint);
-
-				return warehousePointDto;
-			}
-		}
-
 	}
 }
