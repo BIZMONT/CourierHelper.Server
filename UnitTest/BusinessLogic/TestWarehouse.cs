@@ -21,7 +21,7 @@ namespace UnitTest.BusinessLogic
 				Address = "Gorodotska 131"
 			};
 
-			int id = warehouseService.AddWarehouse(warehouse).Result;
+			int id = warehouseService.AddWarehouseAsync(warehouse).Result;
 
 			WarehouseDto warehouseDto = warehouseService.GetById(id);
 

@@ -19,5 +19,5 @@ namespace CourierHelper.BusinessLogic.DTO
             CultureInfo ci = new CultureInfo("en-US");
             return $"{Longitude.ToString("N5", ci)},{Latitude.ToString("N5", ci)}";
         }
-    }
+	}
 }

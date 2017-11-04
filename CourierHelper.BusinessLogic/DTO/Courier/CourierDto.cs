@@ -11,6 +11,15 @@ namespace CourierHelper.BusinessLogic.DTO
 	{
 		public Guid Id { get; set; }
 
+		public string FirstName { get; set; }
+		public string LastName { get; set; }
+		public string MiddleName { get; set; }
+
+		public string Email { get; set; }
+		public string PhoneNumber { get; set; }
+
 		public CourierStateDto State { get; set; }
+
+		public PointDto Location { get; set; }
 	}
 }

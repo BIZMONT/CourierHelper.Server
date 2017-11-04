@@ -21,6 +21,87 @@ namespace CourierHelper.BusinessLogic.Services
 			_connectionString = connectionString;
 		}
 
+		public async Task<Guid> AddCourierAsync(CourierDto courierDto)
+		{
+			if (string.IsNullOrWhiteSpace(courierDto.PhoneNumber))
+			{
+				throw new ArgumentException("Phone number is required"); //todo: better exception
+			}
+
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				Courier courier = new Courier
+				{
+					FirstName = courierDto.FirstName,
+					LastName = courierDto.LastName,
+					MiddleName = courierDto.MiddleName,
+					Email = courierDto.Email,
+					PhoneNumber = courierDto.PhoneNumber,
+					State = (CourierState)courierDto.State
+				};
+
+				if (courierDto.Location != null)
+				{
+					ActivePoint location = new ActivePoint
+					{
+						Coordinates = new Point(courierDto.Location.Longitude, courierDto.Location.Latitude)
+					};
+
+					courier.Location = location;
+				}
+
+				db.CouriersRepo.Create(courier);
+				await db.SaveAsync();
+
+				courierDto.Id = courier.Id;
+				return courier.Id;
+			}
+		}
+
+		public async Task ChangeCourierLocationAsync(Guid id, PointDto newLocation)
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == id);
+
+				if(courier == null)
+				{
+					throw new ArgumentException($"Can`t find courier with id {id}");
+				}
+
+				courier.Location.Coordinates = new Point(newLocation.Longitude, newLocation.Latitude);
+
+				db.CouriersRepo.Update(courier);
+
+				await db.SaveAsync();
+			}
+		}
+
+		public CourierDto GetCourierById(Guid id)
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == id);
+
+				CourierDto courierDto = Mapper.Map<CourierDto>(courier);
+
+				return courierDto;
+			}
+		}
+
+		public List<CourierDto> GetAllCouriers()
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				List<Courier> couriers = db.CouriersRepo.GetAll().ToList();
+
+				List<CourierDto> couriersDto = Mapper.Map<List<CourierDto>>(couriers);
+
+				return couriersDto;
+			}
+		}
+
+
 		public List<CourierDto> GetNearestCouriers(PointDto pointDto, int count = 5)
 		{
 			using (var db = new CourierHelperDb(_connectionString))
@@ -44,8 +125,8 @@ namespace CourierHelper.BusinessLogic.Services
 					})
 					.Where(courier => courier.State != CourierState.NotAccessible)
 					.Distinct()
-					.OrderBy(courier=>courier.Orders.Count())
-					.ThenBy(courier=>courier.State)
+					.OrderBy(courier => courier.Orders.Count())
+					.ThenBy(courier => courier.State)
 					.Take(count)
 					.ToList();
 
@@ -66,9 +147,9 @@ namespace CourierHelper.BusinessLogic.Services
 					throw new ArgumentOutOfRangeException(); // todo: exception
 				}
 
-				var location = courier.Location;
+				var location = courier.Location.Coordinates;
 
-				if(location == null)
+				if (location == null)
 				{
 					return null;
 				}
@@ -86,7 +167,7 @@ namespace CourierHelper.BusinessLogic.Services
 				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
 				Order order = db.OrdersRepo.Query.FirstOrDefault(o => o.Id == orderId);
 
-				if(courier == null || order == null)
+				if (courier == null || order == null)
 				{
 					throw new ArgumentOutOfRangeException(""); //todo: exception
 				}

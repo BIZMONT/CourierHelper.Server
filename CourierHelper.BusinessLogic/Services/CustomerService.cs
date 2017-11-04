@@ -20,7 +20,7 @@ namespace CourierHelper.BusinessLogic.Services
 			_connectionString = connectionString;
 		}
 
-		public async Task CreateCustomerAsync(CustomerDto customerDto)
+		public async Task<Guid> CreateCustomerAsync(CustomerDto customerDto)
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
@@ -28,6 +28,8 @@ namespace CourierHelper.BusinessLogic.Services
 				db.CustomersRepo.Create(customer);
 
 				await db.SaveAsync();
+
+				return customer.Id;
 			}
 		}
 

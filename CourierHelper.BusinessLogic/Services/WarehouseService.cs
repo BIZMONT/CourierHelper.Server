@@ -20,7 +20,7 @@ namespace CourierHelper.BusinessLogic.Services
 			_connectionString = connectionString;
 		}
 
-		public async Task<int> AddWarehouse(WarehouseDto warehouseDto)
+		public async Task<int> AddWarehouseAsync(WarehouseDto warehouseDto)
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
@@ -77,6 +77,8 @@ namespace CourierHelper.BusinessLogic.Services
 				}
 
 				warehouse.Location.Coordinates = new Point(warehouseDto.Location.Longitude, warehouseDto.Location.Latitude);
+				warehouse.Address = warehouseDto.Address;
+				warehouse.Name = warehouseDto.Name;
 
 				db.WarehousesRepo.Update(warehouse);
 

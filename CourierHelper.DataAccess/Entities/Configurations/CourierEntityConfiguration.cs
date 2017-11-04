@@ -9,6 +9,8 @@ namespace CourierHelper.DataAccess.Entities.Configurations
         {
             HasKey(courier => courier.Id);
             Property(courier => courier.Id).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
+
+			Property(courier => courier.PhoneNumber).IsRequired();
         }
     }
 }
