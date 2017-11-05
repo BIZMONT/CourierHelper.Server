@@ -1,5 +1,6 @@
 ﻿using CourierHelper.DataAccess.Abstract;
 using CourierHelper.DataAccess.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace CourierHelper.DataAccess.Repositories
 
         public void Create(Route entity)
         {
+			entity.Created = DateTime.Now;
             _dbContext.Routes.Add(entity);
         }
 

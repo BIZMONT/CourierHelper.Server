@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CourierHelper.BusinessLogic.DTO
 {
@@ -17,5 +15,15 @@ namespace CourierHelper.BusinessLogic.DTO
 		public IEnumerable<PointDto> RoutePoints { get; private set; }
 		public CourierDto Courier { get; set; }
 		public double Distance { get; private set; }
+
+		public RouteDto GetRoute()
+		{
+			return new RouteDto()
+			{
+				Points = RoutePoints.ToList(),
+				Distance = Distance,
+				Created = DateTime.Now
+			};
+		}
 	}
 }

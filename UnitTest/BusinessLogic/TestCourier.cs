@@ -14,6 +14,7 @@ namespace UnitTest.BusinessLogic
 	public class TestCourier
 	{
 		private CourierService courierService = new CourierService(ConfigurationManager.ConnectionStrings["CourierHelperDb"].ConnectionString);
+		private RouteService routeService = new RouteService(ConfigurationManager.ConnectionStrings["CourierHelperDb"].ConnectionString);
 
 		[TestMethod]
 		public void AddCourierWithLocation()
@@ -49,7 +50,7 @@ namespace UnitTest.BusinessLogic
 		[TestMethod]
 		public void ChangeCourierLocation()
 		{
-			CourierDto courier = courierService.GetAllCouriers().First(c=>c.Location != null);
+			CourierDto courier = courierService.GetAllCouriers().First(c => c.Location != null);
 			PointDto newLocation = new PointDto() { Latitude = 27.34, Longitude = 43.15 };
 
 			courierService.ChangeCourierLocationAsync(courier.Id, newLocation).Wait();
@@ -57,6 +58,67 @@ namespace UnitTest.BusinessLogic
 			CourierDto courierWithNewLocation = courierService.GetCourierById(courier.Id);
 
 			Assert.IsTrue(courier.Location.Latitude != courierWithNewLocation.Location.Latitude);
+		}
+
+		[TestMethod]
+		public void AddCurrentRoute()
+		{
+			CourierDto courier = new CourierDto()
+			{
+				FirstName = "Courier",
+				LastName = "With route",
+				PhoneNumber = "test"
+			};
+
+			Guid id = courierService.AddCourierAsync(courier).Result;
+
+			RouteDto route = new RouteDto()
+			{
+				Created = DateTime.Now,
+				Points = new List<PointDto>
+				{
+					new PointDto{Latitude = 49.8333981, Longitude = 24.0125249},
+					new PointDto{Latitude = 49.8306805, Longitude = 24.034673},
+					new PointDto{Latitude = 49.8388715, Longitude = 24.0311097}
+				}
+			};
+
+			Guid routeId = routeService.AddRouteAsync(id, route).Result;
+
+			Assert.IsTrue(routeId != Guid.Empty);
+		}
+
+		[TestMethod]
+		public void ChangeCurrentRoute()
+		{
+			CourierDto courier = new CourierDto()
+			{
+				FirstName = "Courier",
+				LastName = "With route 2",
+				PhoneNumber = "test"
+			};
+
+			Guid id = courierService.AddCourierAsync(courier).Result;
+
+			RouteDto route = new RouteDto()
+			{
+				Created = DateTime.Now,
+				Points = new List<PointDto>
+				{
+					new PointDto{Latitude = 49.8333981, Longitude = 24.0125249},
+					new PointDto{Latitude = 49.8306805, Longitude = 24.034673},
+					new PointDto{Latitude = 49.8388715, Longitude = 24.0311097}
+				}
+			};
+
+			Guid routeId = routeService.AddRouteAsync(id, route).Result;
+
+			route.Points.Add(new PointDto { Latitude = 49.846458, Longitude = 24.0257161 });
+			routeService.ChangeCurrentRouteAsync(id, route).Wait();
+
+			route = routeService.GetCourierCurrentRoute(id);
+
+			Assert.IsTrue(route.Points.Count == 4 && route.Points.Last().Latitude == 49.846458);
 		}
 	}
 }

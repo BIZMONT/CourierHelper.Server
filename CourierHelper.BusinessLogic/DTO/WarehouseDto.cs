@@ -14,5 +14,6 @@ namespace CourierHelper.BusinessLogic.DTO
 		public string Address { get; set; }
 
 		public PointDto Location { get; set; }
+
 	}
 }

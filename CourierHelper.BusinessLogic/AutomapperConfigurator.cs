@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CourierHelper.BusinessLogic.DTO;
 using CourierHelper.DataAccess.Entities;
+using System.Linq;
 
 namespace CourierHelper.BusinessLogic
 {
@@ -21,6 +22,11 @@ namespace CourierHelper.BusinessLogic
 					.ForMember(p => p.After, opt => opt.Ignore())
 				.ReverseMap();
 
+				cfg.CreateMap<ActivePoint, PointDto>()
+					.ForMember(p => p.Latitude, opt => opt.MapFrom(ap=>ap.Coordinates.Latitude))
+					.ForMember(p => p.Longitude, opt => opt.MapFrom(ap => ap.Coordinates.Longitude))
+					.ReverseMap();
+
 				cfg.CreateMap<Customer, CustomerDto>()
 				.ReverseMap();
 
@@ -31,6 +37,8 @@ namespace CourierHelper.BusinessLogic
 					.ForMember(c => c.Location, opt => opt.AllowNull())
 					.ForMember(c => c.Location, opt => opt.MapFrom(c => c.Location.Coordinates));
 
+				cfg.CreateMap<Route, RouteDto>()
+					.ReverseMap();
 				//Not checked
 
 				cfg.CreateMap<Order, OrderDto>()
@@ -40,9 +48,6 @@ namespace CourierHelper.BusinessLogic
 					.ForMember(o => o.Receiver, opt => opt.Ignore())
 					.ForMember(o => o.Sender, opt => opt.Ignore())
 					.ForMember(o => o.Destination, opt => opt.Ignore());
-
-				cfg.CreateMap<Route, RouteDto>()
-					.ReverseMap();
 			});
 
 			_configured = true;

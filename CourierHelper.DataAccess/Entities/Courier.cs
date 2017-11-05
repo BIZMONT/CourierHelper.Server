@@ -17,13 +17,15 @@ namespace CourierHelper.DataAccess.Entities
 
         public CourierState State { get; set; }
 
+		public DateTime? Deleted { get; set; }
 
-        #region Relations
-        public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+		#region Relations
+		public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
         public virtual ActivePoint Location { get; set; }
 
-        public virtual Route ActiveRoute { get; set; }
-        #endregion
-    }
+        public virtual ICollection<Route> Routes { get; set; } = new List<Route>();
+		#endregion
+	}
 }

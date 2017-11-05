@@ -20,7 +20,7 @@ namespace CourierHelper.DataAccess.Repositories
         {
             get
             {
-                return _dbContext.Customers.AsQueryable();
+                return _dbContext.Customers.Where(c=> c.Deleted == null).AsQueryable();
             }
         }
 

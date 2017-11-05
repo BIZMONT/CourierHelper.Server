@@ -12,6 +12,7 @@ namespace UnitTest.BusinessLogic
 
 		}
 
+		[TestMethod]
 		public void GetCustomer_CorrectId_CustomerIsNotNull()
 		{
 

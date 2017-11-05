@@ -64,6 +64,7 @@
     <Compile Include="Services\MapboxService.cs" />
     <Compile Include="Services\OrderService.cs" />
     <Compile Include="Services\PointService.cs" />
+    <Compile Include="Services\RouteService.cs" />
     <Compile Include="Services\WarehouseService.cs" />
   </ItemGroup>
   <ItemGroup>

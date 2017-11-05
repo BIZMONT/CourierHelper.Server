@@ -15,6 +15,7 @@ namespace CourierHelper.BusinessLogic.Infrastructure
 		private OrderService _orderService;
 		private CourierService _courierService;
 		private PointService _pointService;
+		private RouteService _routeService;
 
 		private Queue<OrderDto> _ordersQueue;
 
@@ -24,6 +25,7 @@ namespace CourierHelper.BusinessLogic.Infrastructure
 			_orderService = new OrderService("");                               //todo: get connection string from appsettings
 			_courierService = new CourierService("");                           //todo: get connection string from appsettings
 			_pointService = new PointService("");                           //todo: get connection string from appsettings
+			_routeService = new RouteService("");                           //todo: get connection string from appsettings
 
 			_ordersQueue = new Queue<OrderDto>();
 		}
@@ -57,7 +59,7 @@ namespace CourierHelper.BusinessLogic.Infrastructure
 			}
 			else
 			{
-				var bestRoute = await FindBestCandidateAsync(couriers, orderLocationPoint);
+				RouteCandidate bestRoute = await FindBestCandidateAsync(couriers, orderLocationPoint);
 
 				if (bestRoute == null)
 				{
@@ -67,7 +69,7 @@ namespace CourierHelper.BusinessLogic.Infrastructure
 				else
 				{
 					await _courierService.AssignOrder(bestRoute.Courier.Id, order.Id);
-					//todo: update recomended route
+					await _routeService.ChangeCurrentRouteAsync(bestRoute.Courier.Id, bestRoute.GetRoute());
 				}
 			}
 		}
@@ -79,8 +81,7 @@ namespace CourierHelper.BusinessLogic.Infrastructure
 
 			foreach (var courier in couriers)
 			{
-				PointDto courierLocation = _courierService.GetCourierLocation(courier.Id);
-				pointsDto.Add(courierLocation);
+				pointsDto.Add(courier.Location);
 				pointsDto.Add(orderPoint);
 
 				List<OrderDto> courierOrders = _orderService.GetCourierOrders(courier.Id);
@@ -93,7 +94,7 @@ namespace CourierHelper.BusinessLogic.Infrastructure
 				var optimizedPointsOrder = await _mapBoxService.OptimizeRouteAsync(pointsDto.ToArray());
 				var optimizedRoute = await _mapBoxService.BuildRouteAsync(optimizedPointsOrder);
 
-				RouteDto currentRoute = _courierService.GetCourierCurrentRoute(courier.Id);
+				RouteDto currentRoute = _routeService.GetCourierCurrentRoute(courier.Id);
 				candidates.Add(optimizedRoute.Distance - currentRoute.Distance, optimizedRoute);
 			}
 

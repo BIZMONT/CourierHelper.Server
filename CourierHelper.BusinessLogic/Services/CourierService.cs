@@ -21,6 +21,7 @@ namespace CourierHelper.BusinessLogic.Services
 			_connectionString = connectionString;
 		}
 
+
 		public async Task<Guid> AddCourierAsync(CourierDto courierDto)
 		{
 			if (string.IsNullOrWhiteSpace(courierDto.PhoneNumber))
@@ -58,15 +59,16 @@ namespace CourierHelper.BusinessLogic.Services
 			}
 		}
 
-		public async Task ChangeCourierLocationAsync(Guid id, PointDto newLocation)
+
+		public async Task ChangeCourierLocationAsync(Guid courierId, PointDto newLocation)
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == id);
+				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
 
 				if(courier == null)
 				{
-					throw new ArgumentException($"Can`t find courier with id {id}");
+					throw new ArgumentException($"Can`t find courier with id {courierId}");
 				}
 
 				courier.Location.Coordinates = new Point(newLocation.Longitude, newLocation.Latitude);
@@ -76,6 +78,7 @@ namespace CourierHelper.BusinessLogic.Services
 				await db.SaveAsync();
 			}
 		}
+
 
 		public CourierDto GetCourierById(Guid id)
 		{
@@ -98,6 +101,16 @@ namespace CourierHelper.BusinessLogic.Services
 				List<CourierDto> couriersDto = Mapper.Map<List<CourierDto>>(couriers);
 
 				return couriersDto;
+			}
+		}
+
+
+		public async Task DisableCourier(Guid id)
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				db.CouriersRepo.Delete(id);
+				await db.SaveAsync();
 			}
 		}
 
@@ -136,30 +149,6 @@ namespace CourierHelper.BusinessLogic.Services
 			}
 		}
 
-		public PointDto GetCourierLocation(Guid courierId)
-		{
-			using (var db = new CourierHelperDb(_connectionString))
-			{
-				var courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
-
-				if (courier == null)
-				{
-					throw new ArgumentOutOfRangeException(); // todo: exception
-				}
-
-				var location = courier.Location.Coordinates;
-
-				if (location == null)
-				{
-					return null;
-				}
-
-				var point = Mapper.Map<PointDto>(location);  //todo: automapper config
-
-				return point;
-			}
-		}
-
 		public async Task AssignOrder(Guid courierId, long orderId)
 		{
 			using (var db = new CourierHelperDb(_connectionString))
@@ -178,11 +167,6 @@ namespace CourierHelper.BusinessLogic.Services
 
 				await db.SaveAsync();
 			}
-		}
-
-		public RouteDto GetCourierCurrentRoute(Guid id)
-		{
-			throw new NotImplementedException();
 		}
 	}
 }

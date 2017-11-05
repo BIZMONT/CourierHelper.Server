@@ -38,7 +38,7 @@ namespace CourierHelper.DataAccess
 				.WithOptional(o => o.Courier);
 
 			modelBuilder.Entity<Courier>()
-				.HasOptional(c => c.ActiveRoute)
+				.HasMany(c => c.Routes)
 				.WithRequired(r => r.Courier);
 			#endregion
 

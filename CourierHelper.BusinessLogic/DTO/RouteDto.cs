@@ -11,5 +11,11 @@ namespace CourierHelper.BusinessLogic.DTO
 		public Guid Id { get; set; }
 
 		public double Distance { get; set; }
+		public bool IsCurrent { get; set; }
+
+		public DateTime? Created { get; set; }
+		public DateTime? Completed { get; set; }
+
+		public List<PointDto> Points { get; set; }
 	}
 }

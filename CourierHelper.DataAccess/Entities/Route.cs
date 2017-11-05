@@ -7,7 +7,11 @@ namespace CourierHelper.DataAccess.Entities
     {
         public Guid Id { get; set; }
 		 
+		public bool IsCurrent { get; set; }
 		public double Distance { get; set; }
+
+		public DateTime? Created { get; set; }
+		public DateTime? Completed { get; set; }
 
         #region Relations
         public virtual ICollection<ActivePoint> Points { get; set; } = new List<ActivePoint>();
