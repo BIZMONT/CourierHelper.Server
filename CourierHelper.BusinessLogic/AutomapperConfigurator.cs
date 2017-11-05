@@ -42,12 +42,9 @@ namespace CourierHelper.BusinessLogic
 				//Not checked
 
 				cfg.CreateMap<Order, OrderDto>()
-					.ReverseMap()
-					.ForMember(o => o.Courier, opt => opt.Ignore())
-					.ForMember(o => o.Destination, opt => opt.Ignore())
-					.ForMember(o => o.Receiver, opt => opt.Ignore())
-					.ForMember(o => o.Sender, opt => opt.Ignore())
-					.ForMember(o => o.Destination, opt => opt.Ignore());
+					.ForMember(o => o.CourierId, opt => opt.MapFrom(o => o.Courier.Id))
+					.ForMember(o => o.WarehouseId, opt => opt.MapFrom(o => o.Warehouse.Id))
+					.ForMember(o => o.Destination, opt => opt.MapFrom(o => o.Destination.Coordinates));
 			});
 
 			_configured = true;

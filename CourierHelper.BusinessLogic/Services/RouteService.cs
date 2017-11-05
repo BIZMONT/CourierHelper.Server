@@ -75,7 +75,7 @@ namespace CourierHelper.BusinessLogic.Services
 			}
 		}
 
-		public List<RouteDto> GetAllRoutes(Guid courierId)
+		public List<RouteDto> GetCourierAllRoutes(Guid courierId)
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
@@ -94,7 +94,7 @@ namespace CourierHelper.BusinessLogic.Services
 			}
 		}
 
-		public async Task ChangeCurrentRouteAsync(Guid courierId, RouteDto newCurrentRouteDto)
+		public async Task ChangeCourierCurrentRouteAsync(Guid courierId, RouteDto newCurrentRouteDto)
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{

@@ -1,7 +1,9 @@
-﻿using CourierHelper.BusinessLogic.Services;
+﻿using CourierHelper.BusinessLogic.DTO;
+using CourierHelper.BusinessLogic.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,18 +13,32 @@ namespace UnitTest.BusinessLogic
 	[TestClass]
 	public class TestOrders
 	{
-		private const string connectionString = "Data Source=DESKTOP-FK4EC54;Initial Catalog=CourierHelperDbTest;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-		private OrderService _orderService;
-
-		public TestOrders()
-		{
-			_orderService = new OrderService(connectionString);
-		}
+		private OrderService orderService = new OrderService(ConfigurationManager.ConnectionStrings["CourierHelperDb"].ConnectionString);
+		private WarehouseService warehouseService = new WarehouseService(ConfigurationManager.ConnectionStrings["CourierHelperDb"].ConnectionString);
 
 		[TestMethod]
-		public void GetOrderById_CorrectId_ReturnOrder()
+		public void AddOrder_AllNewData_NewOrderIsExistsInDb()
 		{
+			WarehouseDto warehouse = new WarehouseDto
+			{
+				Address = "somewhere",
+				Name = "Warehouse 42",
+				Location = new PointDto { Longitude = 23.42, Latitude = 42.23 }
+			};
 
+			var warehouseId = warehouseService.AddWarehouseAsync(warehouse).Result;
+
+			OrderDto order = new OrderDto
+			{
+				WarehouseId = warehouseId,
+				Destination = new PointDto { Longitude = 23.23, Latitude = 42.42 },
+				Sender = new CustomerDto { FisrsName = "Sender", LastName = "1", PhoneNumber = "testnumbers", Email = "testemail" },
+				Receiver = new CustomerDto { FisrsName = "Receiver", LastName = "1", PhoneNumber = "testnumbers", Email = "testemail" }
+			};
+
+			var orderId = orderService.AddOrder(order).Result;
+
+			Assert.IsTrue(orderId != default(long));
 		}
 	}
 }

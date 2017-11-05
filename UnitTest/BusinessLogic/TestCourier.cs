@@ -114,7 +114,7 @@ namespace UnitTest.BusinessLogic
 			Guid routeId = routeService.AddRouteAsync(id, route).Result;
 
 			route.Points.Add(new PointDto { Latitude = 49.846458, Longitude = 24.0257161 });
-			routeService.ChangeCurrentRouteAsync(id, route).Wait();
+			routeService.ChangeCourierCurrentRouteAsync(id, route).Wait();
 
 			route = routeService.GetCourierCurrentRoute(id);
 

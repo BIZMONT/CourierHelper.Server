@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CourierHelper.BusinessLogic.Abstract;
 using CourierHelper.BusinessLogic.DTO;
+using CourierHelper.BusinessLogic.DTO.Enums;
 using CourierHelper.DataAccess;
 using CourierHelper.DataAccess.Entities;
 using CourierHelper.DataAccess.Enums;
@@ -74,6 +75,52 @@ namespace CourierHelper.BusinessLogic.Services
 				courier.Location.Coordinates = new Point(newLocation.Longitude, newLocation.Latitude);
 
 				db.CouriersRepo.Update(courier);
+
+				await db.SaveAsync();
+			}
+		}
+
+		public async Task ChangeCourierStateAsync(Guid courierId, CourierStateDto newState)
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
+
+				if (courier == null)
+				{
+					throw new ArgumentException($"Can`t find courier with id {courierId}");
+				}
+
+				courier.State = (CourierState)newState;
+
+				db.CouriersRepo.Update(courier);
+
+				await db.SaveAsync();
+			}
+		}
+
+		public async Task CompleteCurrentRoute(Guid courierId)
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
+
+				if (courier == null)
+				{
+					throw new ArgumentException($"Can`t find courier with id {courierId}");
+				}
+
+				var route = courier.Routes.FirstOrDefault(r => r.IsCurrent);
+
+				if(route == null)
+				{
+					throw new Exception(); //todo: exception
+				}
+
+				route.IsCurrent = false;
+				route.Completed = DateTime.Now;
+
+				db.RoutesRepo.Update(route);
 
 				await db.SaveAsync();
 			}

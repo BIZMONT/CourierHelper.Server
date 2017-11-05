@@ -14,11 +14,11 @@ namespace CourierHelper.BusinessLogic.DTO
 
 		public OrderStateDto State { get; set; }
 
-		public Guid SenderId { get; set; }
-		public Guid ReceiverId { get; set; }
+		public CustomerDto Sender { get; set; }
+		public CustomerDto Receiver { get; set; }
 		public int WarehouseId { get; set; }
-		public Guid CourierId { get; set; }
-		public Guid DestinationId { get; set; }
+		public Guid? CourierId { get; set; }
+		public PointDto Destination { get; set; }
 
 		public bool Equals(OrderDto other)
 		{

@@ -22,12 +22,81 @@ namespace CourierHelper.BusinessLogic.Services
 			_connectionString = connectionString;
 		}
 
+		public async Task<long> AddOrder(OrderDto orderDto)
+		{
+			if (orderDto.WarehouseId <= 0 || orderDto.Receiver == null ||
+				orderDto.Sender == null || orderDto.Destination == null)
+			{
+				throw new ArgumentException(); //todo: exception
+			}
+
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				Warehouse warehouse = db.WarehousesRepo.Query.FirstOrDefault(w => w.Id == orderDto.WarehouseId);
+
+				if (warehouse == null)
+				{
+					throw new ArgumentException(); //todo: exception
+				}
+
+
+				Customer sender = db.CustomersRepo.Query.FirstOrDefault(c => c.Id == orderDto.Sender.Id);
+				if (sender == null)
+				{
+					sender = Mapper.Map<Customer>(orderDto.Sender);
+
+					db.CustomersRepo.Create(sender);
+				}
+				else
+				{
+					sender.Email = orderDto.Sender.Email;
+					sender.FisrsName = orderDto.Sender.FisrsName;
+					sender.SecondName = orderDto.Sender.SecondName;
+					sender.PhoneNumber = orderDto.Sender.PhoneNumber;
+
+					db.CustomersRepo.Update(sender);
+				}
+
+				Customer receiver = db.CustomersRepo.Query.FirstOrDefault(c => c.Id == orderDto.Receiver.Id);
+				if (receiver == null)
+				{
+					receiver = Mapper.Map<Customer>(orderDto.Receiver);
+
+					db.CustomersRepo.Create(sender);
+				}
+				else
+				{
+					receiver.Email = orderDto.Receiver.Email;
+					receiver.FisrsName = orderDto.Receiver.FisrsName;
+					receiver.SecondName = orderDto.Receiver.SecondName;
+					receiver.PhoneNumber = orderDto.Receiver.PhoneNumber;
+
+					db.CustomersRepo.Update(receiver);
+				}
+
+				Order order = new Order
+				{
+					State = OrderState.NotAssigned,
+					Receiver = receiver,
+					Sender = sender,
+					Warehouse = warehouse,
+					Destination = new ActivePoint { Coordinates = new Point(orderDto.Destination.Longitude, orderDto.Destination.Latitude) }
+				};
+
+				db.OrdersRepo.Create(order);
+
+				await db.SaveAsync();
+
+				return order.Id;
+			}
+		}
+
 		public List<OrderDto> GetUnassignedOrders()
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
 				var orders = db.OrdersRepo.Query.Where(order => order.State == OrderState.NotAssigned).ToList();
-				var ordersDto = Mapper.Map<List<OrderDto>>(orders);		//todo: automapper config
+				var ordersDto = Mapper.Map<List<OrderDto>>(orders);
 
 				return ordersDto;
 			}
@@ -46,7 +115,7 @@ namespace CourierHelper.BusinessLogic.Services
 
 				var orders = courier.Orders.ToList();
 
-				var ordersDto = Mapper.Map<List<OrderDto>>(orders);  //todo: automapper config
+				var ordersDto = Mapper.Map<List<OrderDto>>(orders);
 
 				return ordersDto;
 			}

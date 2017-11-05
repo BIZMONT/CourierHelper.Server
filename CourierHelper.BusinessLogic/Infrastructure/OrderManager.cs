@@ -69,7 +69,7 @@ namespace CourierHelper.BusinessLogic.Infrastructure
 				else
 				{
 					await _courierService.AssignOrder(bestRoute.Courier.Id, order.Id);
-					await _routeService.ChangeCurrentRouteAsync(bestRoute.Courier.Id, bestRoute.GetRoute());
+					await _routeService.ChangeCourierCurrentRouteAsync(bestRoute.Courier.Id, bestRoute.GetRoute());
 				}
 			}
 		}
