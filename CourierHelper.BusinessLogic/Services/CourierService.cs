@@ -152,7 +152,7 @@ namespace CourierHelper.BusinessLogic.Services
 		}
 
 
-		public async Task DisableCourier(Guid id)
+		public async Task DisableCourierAsync(Guid id)
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{

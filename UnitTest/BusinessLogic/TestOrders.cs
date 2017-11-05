@@ -32,13 +32,14 @@ namespace UnitTest.BusinessLogic
 			{
 				WarehouseId = warehouseId,
 				Destination = new PointDto { Longitude = 23.23, Latitude = 42.42 },
-				Sender = new CustomerDto { FisrsName = "Sender", LastName = "1", PhoneNumber = "testnumbers", Email = "testemail" },
-				Receiver = new CustomerDto { FisrsName = "Receiver", LastName = "1", PhoneNumber = "testnumbers", Email = "testemail" }
+				Sender = new CustomerDto { FirstName = "Sender", LastName = "1", PhoneNumber = "testnumbers", Email = "testemail" },
+				Receiver = new CustomerDto { FirstName = "Receiver", LastName = "1", PhoneNumber = "testnumbers", Email = "testemail" }
 			};
 
 			var orderId = orderService.AddOrder(order).Result;
+			order = orderService.GetOrderById(orderId);
 
-			Assert.IsTrue(orderId != default(long));
+			Assert.IsNotNull(order);
 		}
 	}
 }

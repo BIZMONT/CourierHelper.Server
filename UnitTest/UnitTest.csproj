@@ -57,6 +57,7 @@
     <Compile Include="BusinessLogic\TestCourier.cs" />
     <Compile Include="BusinessLogic\TestOrders.cs" />
     <Compile Include="BusinessLogic\TestCustomer.cs" />
+    <Compile Include="BusinessLogic\TestRoute.cs" />
     <Compile Include="BusinessLogic\TestWarehouse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -50,8 +50,8 @@ namespace CourierHelper.BusinessLogic.Services
 				else
 				{
 					sender.Email = orderDto.Sender.Email;
-					sender.FisrsName = orderDto.Sender.FisrsName;
-					sender.SecondName = orderDto.Sender.SecondName;
+					sender.FirstName = orderDto.Sender.FirstName;
+					sender.MiddleName = orderDto.Sender.MiddleName;
 					sender.PhoneNumber = orderDto.Sender.PhoneNumber;
 
 					db.CustomersRepo.Update(sender);
@@ -67,8 +67,8 @@ namespace CourierHelper.BusinessLogic.Services
 				else
 				{
 					receiver.Email = orderDto.Receiver.Email;
-					receiver.FisrsName = orderDto.Receiver.FisrsName;
-					receiver.SecondName = orderDto.Receiver.SecondName;
+					receiver.FirstName = orderDto.Receiver.FirstName;
+					receiver.MiddleName = orderDto.Receiver.MiddleName;
 					receiver.PhoneNumber = orderDto.Receiver.PhoneNumber;
 
 					db.CustomersRepo.Update(receiver);
@@ -88,6 +88,18 @@ namespace CourierHelper.BusinessLogic.Services
 				await db.SaveAsync();
 
 				return order.Id;
+			}
+		}
+
+		public OrderDto GetOrderById(long id)
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				Order order = db.OrdersRepo.Query.FirstOrDefault(o => o.Id == id);
+
+				OrderDto orderDto = Mapper.Map<OrderDto>(order);
+
+				return orderDto;
 			}
 		}
 
@@ -138,6 +150,16 @@ namespace CourierHelper.BusinessLogic.Services
 				await db.SaveAsync();
 
 				orderDto.State = state;
+			}
+		}
+
+		public async Task DeleteOrder(long orderId)
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				db.OrdersRepo.Delete(orderId);
+
+				await db.SaveAsync();
 			}
 		}
 	}
