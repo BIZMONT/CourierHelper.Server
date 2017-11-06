@@ -44,6 +44,11 @@ namespace CourierHelper.DataAccess.Entities
             _Geography = geography;
         }
 
+		public DbGeography Geography
+		{
+			get { return _Geography; }
+		}
+
         public Point(double longitude, double latitude)
         {
             _Geography = DbGeography.FromText($"POINT({longitude} {latitude})");

@@ -22,12 +22,23 @@ namespace CourierHelper.BusinessLogic.Services
 			_connectionString = connectionString;
 		}
 
-		public async Task<long> AddOrder(OrderDto orderDto)
+		public async Task<long> AddOrderAsync(OrderDto orderDto)
 		{
-			if (orderDto.WarehouseId <= 0 || orderDto.Receiver == null ||
-				orderDto.Sender == null || orderDto.Destination == null)
+			if (orderDto.WarehouseId <= 0)
 			{
-				throw new ArgumentException(); //todo: exception
+				throw new ArgumentException("Order must have related warehouse");
+			}
+			if (orderDto.Receiver == null)
+			{
+				throw new ArgumentException("Order receiver not set. Order must have receiver");
+			}
+			if (orderDto.Sender == null)
+			{
+				throw new ArgumentException("Order sender not set. Each order must have information about sender");
+			}
+			if (orderDto.Destination == null)
+			{
+				throw new ArgumentException("Order destination not set. Each order must have destination point");
 			}
 
 			using (var db = new CourierHelperDb(_connectionString))
@@ -36,7 +47,7 @@ namespace CourierHelper.BusinessLogic.Services
 
 				if (warehouse == null)
 				{
-					throw new ArgumentException(); //todo: exception
+					throw new ArgumentException($"Can't find warehouse with id {orderDto.WarehouseId}");
 				}
 
 

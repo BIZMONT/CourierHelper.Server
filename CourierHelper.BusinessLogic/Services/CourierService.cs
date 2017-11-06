@@ -168,6 +168,7 @@ namespace CourierHelper.BusinessLogic.Services
 			{
 				var nearestPoints = db.ActivePointsRepo.Query
 					.Where(point => point.Courier != null || point.Route != null)
+					.AsEnumerable()
 					.OrderBy(point => point.Coordinates.Distance(new Point(pointDto.Longitude, pointDto.Latitude)))
 					.ToList();
 

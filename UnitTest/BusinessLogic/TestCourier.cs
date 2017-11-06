@@ -111,5 +111,42 @@ namespace UnitTest.BusinessLogic
 
 			Assert.IsNull(courier);
 		}
+
+		[TestMethod]
+		public void GetNearestCouriers_CorrectData_ListOfCouriersIsNotEmpty()
+		{
+			CourierDto[] couriers = new CourierDto[]
+			{
+				CourierFactory(new PointDto(49.83498756, 24.03488874)),
+				CourierFactory(new PointDto(49.83609475, 24.02265787)),
+				CourierFactory(new PointDto(49.84495134, 24.03587579)),
+				CourierFactory(new PointDto(49.84401041, 23.98257493)),
+				CourierFactory(new PointDto(49.82712580, 23.98296117)),
+				CourierFactory(new PointDto(49.82014880, 23.98823976)),
+				CourierFactory(new PointDto(49.82390000, 24.02079100)),
+				CourierFactory(new PointDto(49.83226000, 24.01255100))
+			};
+
+			foreach (var courier in couriers)
+			{
+				courierService.AddCourierAsync(courier).Wait();
+			}
+
+			var result = courierService.GetNearestCouriers(new PointDto(49.830213, 24.030651), 3);
+
+			Assert.IsTrue(result.Count ==3 && result.First().Location.Latitude == 49.83498756);
+		}
+
+		private CourierDto CourierFactory(PointDto location)
+		{
+			Random rand = new Random();
+			return new CourierDto()
+			{
+				Location = location,
+				FirstName = $"Courier",
+				State = CourierStateDto.Idle,
+				PhoneNumber = "testnumber"
+			};
+		}
 	}
 }

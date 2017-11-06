@@ -19,13 +19,13 @@ namespace CourierHelper.BusinessLogic.Infrastructure
 
 		private Queue<OrderDto> _ordersQueue;
 
-		public OrderManager()
+		public OrderManager(string connectionString, string mapBoxAccessToken)
 		{
-			_mapBoxService = new MapboxService("", MapBoxProfile.Driving);      //todo: get access token from appsettings
-			_orderService = new OrderService("");                               //todo: get connection string from appsettings
-			_courierService = new CourierService("");                           //todo: get connection string from appsettings
-			_pointService = new PointService("");                           //todo: get connection string from appsettings
-			_routeService = new RouteService("");                           //todo: get connection string from appsettings
+			_mapBoxService = new MapboxService(mapBoxAccessToken, MapBoxProfile.Driving);
+			_orderService = new OrderService(connectionString);
+			_courierService = new CourierService(connectionString);
+			_pointService = new PointService(connectionString);
+			_routeService = new RouteService(connectionString);
 
 			_ordersQueue = new Queue<OrderDto>();
 		}
@@ -33,13 +33,18 @@ namespace CourierHelper.BusinessLogic.Infrastructure
 		public void UpdateQueue()
 		{
 			var newOrders = _orderService.GetUnassignedOrders();
-			_ordersQueue.Concat(newOrders).Distinct();
+			_ordersQueue = new Queue<OrderDto>(_ordersQueue.Concat(newOrders).Distinct());
 		}
 
-		public async Task ProceedNextOrder()
+		public async Task ProceedNextOrderAsync()
 		{
+			if(_ordersQueue.Count == 0)
+			{
+				return;
+			}
+
 			OrderDto order = _ordersQueue.Dequeue();
-			if(order == null)
+			if (order == null)
 			{
 				return;
 			}

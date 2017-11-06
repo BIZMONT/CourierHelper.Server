@@ -1,4 +1,5 @@
 ﻿using CourierHelper.BusinessLogic.Infrastructure;
+using System.Configuration;
 using System.ServiceProcess;
 using System.Timers;
 
@@ -13,7 +14,7 @@ namespace CourierHelper.TaskManagerService
 		public Service()
 		{
 			InitializeComponent();
-			_orderManager = new OrderManager();
+			_orderManager = new OrderManager("","");
 		}
 
 		protected override void OnStart(string[] args)
@@ -35,7 +36,7 @@ namespace CourierHelper.TaskManagerService
 		}
 		private void ProceedData(object sender, ElapsedEventArgs e)
 		{
-			_orderManager.ProceedNextOrder().Wait();
+			_orderManager.ProceedNextOrderAsync().Wait();
 		}
 
 		protected override void OnStop()
