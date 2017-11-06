@@ -58,7 +58,7 @@ namespace CourierHelper.BusinessLogic.Services
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				Customer customer = db.CustomersRepo.Query.FirstOrDefault(c => c.Id == customerId);
+				Customer customer = db.CustomersRepo.Get(customerId);
 
 				CustomerDto customerDto = Mapper.Map<CustomerDto>(customer);
 

@@ -8,6 +8,8 @@ namespace CourierHelper.DataAccess.Abstract
 {
     public interface IRepository<TEntity> where TEntity : class
     {
+		TEntity Get(object key);
+
         IEnumerable<TEntity> GetAll();
 
         IQueryable<TEntity> Query { get; }

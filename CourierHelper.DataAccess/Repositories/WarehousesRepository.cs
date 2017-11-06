@@ -42,7 +42,13 @@ namespace CourierHelper.DataAccess.Repositories
             }
         }
 
-        public IEnumerable<Warehouse> GetAll()
+		public Warehouse Get(object key)
+		{
+			Warehouse warehouse = _dbContext.Warehouses.Find(key);
+			return warehouse.Deleted != null ? null : warehouse;
+		}
+
+		public IEnumerable<Warehouse> GetAll()
         {
             return _dbContext.Warehouses.Where(w => w.Deleted == null).AsEnumerable();
 		}

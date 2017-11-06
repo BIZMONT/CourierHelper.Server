@@ -26,19 +26,19 @@ namespace CourierHelper.BusinessLogic.Services
 		{
 			if (orderDto.WarehouseId <= 0)
 			{
-				throw new ArgumentException("Order must have related warehouse");
+				throw new ArgumentOutOfRangeException("Order must have related warehouse");
 			}
 			if (orderDto.Receiver == null)
 			{
-				throw new ArgumentException("Order receiver not set. Order must have receiver");
+				throw new ArgumentNullException("Order receiver not set. Order must have receiver");
 			}
 			if (orderDto.Sender == null)
 			{
-				throw new ArgumentException("Order sender not set. Each order must have information about sender");
+				throw new ArgumentNullException("Order sender not set. Each order must have information about sender");
 			}
 			if (orderDto.Destination == null)
 			{
-				throw new ArgumentException("Order destination not set. Each order must have destination point");
+				throw new ArgumentNullException("Order destination not set. Each order must have destination point");
 			}
 
 			using (var db = new CourierHelperDb(_connectionString))
@@ -47,7 +47,7 @@ namespace CourierHelper.BusinessLogic.Services
 
 				if (warehouse == null)
 				{
-					throw new ArgumentException($"Can't find warehouse with id {orderDto.WarehouseId}");
+					throw new ArgumentOutOfRangeException($"The warehouse warehouse with id {orderDto.WarehouseId}");
 				}
 
 
@@ -100,13 +100,13 @@ namespace CourierHelper.BusinessLogic.Services
 
 				return order.Id;
 			}
-		}
+		}       //todo: this method maybe need refactoring
 
-		public OrderDto GetOrderById(long id)
+		public OrderDto GetOrderById(long orderId)
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				Order order = db.OrdersRepo.Query.FirstOrDefault(o => o.Id == id);
+				Order order = db.OrdersRepo.Get(orderId);
 
 				OrderDto orderDto = Mapper.Map<OrderDto>(order);
 
@@ -118,7 +118,9 @@ namespace CourierHelper.BusinessLogic.Services
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				var orders = db.OrdersRepo.Query.Where(order => order.State == OrderState.NotAssigned).ToList();
+				var orders = db.OrdersRepo.Query
+					.Where(order => order.Deleted == null && order.State == OrderState.NotAssigned)
+					.ToList();
 				var ordersDto = Mapper.Map<List<OrderDto>>(orders);
 
 				return ordersDto;
@@ -129,14 +131,14 @@ namespace CourierHelper.BusinessLogic.Services
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				var courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
+				var courier = db.CouriersRepo.Get(courierId);
 
 				if (courier == null)
 				{
-					throw new ArgumentOutOfRangeException(); // todo: exception
+					throw new ArgumentOutOfRangeException($"The courier with id {courierId} does not exist!");
 				}
 
-				var orders = courier.Orders.ToList();
+				var orders = courier.Orders.Where(o=>o.Deleted == null).ToList();
 
 				var ordersDto = Mapper.Map<List<OrderDto>>(orders);
 
@@ -148,11 +150,11 @@ namespace CourierHelper.BusinessLogic.Services
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				var order = db.OrdersRepo.Query.FirstOrDefault(o => o.Id == orderDto.Id);
+				Order order = db.OrdersRepo.Get(orderDto.Id);
 
 				if (order == null)
 				{
-					throw new ArgumentOutOfRangeException("The order with this id does not exist!");
+					throw new ArgumentOutOfRangeException($"The order with id {orderDto.Id} does not exist!");
 				}
 
 				order.State = (OrderState)state;

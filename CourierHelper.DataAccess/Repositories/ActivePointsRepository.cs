@@ -43,7 +43,12 @@ namespace CourierHelper.DataAccess.Repositories
             }
         }
 
-        public IEnumerable<ActivePoint> GetAll()
+		public ActivePoint Get(object key)
+		{
+			return _dbContext.ActivePoints.Find(key);
+		}
+
+		public IEnumerable<ActivePoint> GetAll()
         {
             return _dbContext.ActivePoints.AsEnumerable();
         }

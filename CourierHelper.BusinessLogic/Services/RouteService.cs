@@ -2,10 +2,10 @@
 using CourierHelper.BusinessLogic.DTO;
 using CourierHelper.DataAccess;
 using CourierHelper.DataAccess.Entities;
+using CourierHelper.DataAccess.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CourierHelper.BusinessLogic.Services
@@ -23,7 +23,7 @@ namespace CourierHelper.BusinessLogic.Services
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
+				Courier courier = db.CouriersRepo.Get(courierId);
 
 				if (courier == null)
 				{
@@ -35,7 +35,7 @@ namespace CourierHelper.BusinessLogic.Services
 					throw new Exception(); //todo: exception
 				}
 
-				DataAccess.Entities.Route route = new DataAccess.Entities.Route
+				Route route = new Route
 				{
 					Created = DateTime.Now,
 					IsCurrent = true,
@@ -60,14 +60,14 @@ namespace CourierHelper.BusinessLogic.Services
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
+				Courier courier = db.CouriersRepo.Get(courierId);
 
 				if (courier == null)
 				{
 					throw new ArgumentOutOfRangeException(""); //todo: exception
 				}
 
-				DataAccess.Entities.Route currentRoute = courier.Routes.FirstOrDefault(route => route.IsCurrent);
+				Route currentRoute = courier.Routes.FirstOrDefault(route => route.IsCurrent);
 
 				RouteDto routeDto = Mapper.Map<RouteDto>(currentRoute);
 
@@ -79,14 +79,14 @@ namespace CourierHelper.BusinessLogic.Services
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
+				Courier courier = db.CouriersRepo.Get(courierId);
 
 				if (courier == null)
 				{
 					throw new ArgumentOutOfRangeException(""); //todo: exception
 				}
 
-				List<DataAccess.Entities.Route> routes = courier.Routes.ToList();
+				List<Route> routes = courier.Routes.ToList();
 
 				List<RouteDto> routesDto = Mapper.Map<List<RouteDto>>(routes);
 
@@ -98,14 +98,13 @@ namespace CourierHelper.BusinessLogic.Services
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
-
+				Courier courier = db.CouriersRepo.Get(courierId);
 				if (courier == null)
 				{
 					throw new ArgumentException(); //todo: exception
 				}
 
-				DataAccess.Entities.Route currentRoute = courier.Routes.FirstOrDefault(r => r.IsCurrent);
+				Route currentRoute = courier.Routes.FirstOrDefault(r => r.IsCurrent);
 
 				foreach (var point in currentRoute.Points.ToList())
 				{

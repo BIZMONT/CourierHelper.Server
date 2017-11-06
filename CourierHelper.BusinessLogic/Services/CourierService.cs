@@ -65,7 +65,7 @@ namespace CourierHelper.BusinessLogic.Services
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
+				Courier courier = db.CouriersRepo.Get(courierId);
 
 				if(courier == null)
 				{
@@ -84,7 +84,7 @@ namespace CourierHelper.BusinessLogic.Services
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
+				Courier courier = db.CouriersRepo.Get(courierId);
 
 				if (courier == null)
 				{
@@ -103,7 +103,7 @@ namespace CourierHelper.BusinessLogic.Services
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
+				Courier courier = db.CouriersRepo.Get(courierId);
 
 				if (courier == null)
 				{
@@ -127,11 +127,11 @@ namespace CourierHelper.BusinessLogic.Services
 		}
 
 
-		public CourierDto GetCourierById(Guid id)
+		public CourierDto GetCourierById(Guid courierId)
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == id);
+				Courier courier = db.CouriersRepo.Get(courierId);
 
 				CourierDto courierDto = Mapper.Map<CourierDto>(courier);
 
@@ -152,11 +152,11 @@ namespace CourierHelper.BusinessLogic.Services
 		}
 
 
-		public async Task DisableCourierAsync(Guid id)
+		public async Task DisableCourierAsync(Guid courierId)
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				db.CouriersRepo.Delete(id);
+				db.CouriersRepo.Delete(courierId);
 				await db.SaveAsync();
 			}
 		}
@@ -167,7 +167,7 @@ namespace CourierHelper.BusinessLogic.Services
 			using (var db = new CourierHelperDb(_connectionString))
 			{
 				var nearestPoints = db.ActivePointsRepo.Query
-					.Where(point => point.Courier != null || point.Route != null)
+					.Where(point => (point.Courier != null && point.Courier.Deleted != null) || point.Route != null)
 					.AsEnumerable()
 					.OrderBy(point => point.Coordinates.Distance(new Point(pointDto.Longitude, pointDto.Latitude)))
 					.ToList();
@@ -201,8 +201,8 @@ namespace CourierHelper.BusinessLogic.Services
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				Courier courier = db.CouriersRepo.Query.FirstOrDefault(c => c.Id == courierId);
-				Order order = db.OrdersRepo.Query.FirstOrDefault(o => o.Id == orderId);
+				Courier courier = db.CouriersRepo.Get(courierId);
+				Order order = db.OrdersRepo.Get(orderId);
 
 				if (courier == null || order == null)
 				{

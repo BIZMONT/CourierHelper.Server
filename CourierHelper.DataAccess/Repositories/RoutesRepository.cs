@@ -45,7 +45,12 @@ namespace CourierHelper.DataAccess.Repositories
             }
         }
 
-        public IEnumerable<Route> GetAll()
+		public Route Get(object key)
+		{
+			return _dbContext.Routes.Find(key);
+		}
+
+		public IEnumerable<Route> GetAll()
         {
             return _dbContext.Routes.AsEnumerable();
         }

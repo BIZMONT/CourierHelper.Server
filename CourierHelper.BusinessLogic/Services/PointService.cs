@@ -24,7 +24,7 @@ namespace CourierHelper.BusinessLogic.Services
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				var order = db.OrdersRepo.Query.FirstOrDefault(o => o.Id == orderId);
+				var order = db.OrdersRepo.Get(orderId);
 
 				if (order == null)
 				{

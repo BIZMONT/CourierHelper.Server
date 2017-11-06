@@ -45,7 +45,13 @@ namespace CourierHelper.DataAccess.Repositories
             }
         }
 
-        public IEnumerable<Customer> GetAll()
+		public Customer Get(object key)
+		{
+			Customer customer = _dbContext.Customers.Find(key);
+			return customer.Deleted != null ? null : customer;
+		}
+
+		public IEnumerable<Customer> GetAll()
         {
             return _dbContext.Customers.Where(c=>c.Deleted == null).AsEnumerable();
         }
