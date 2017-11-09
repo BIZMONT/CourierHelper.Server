@@ -28,6 +28,8 @@ namespace CourierHelper.DataAccess.Entities
         public virtual ActivePoint Location { get; set; }
 
         public virtual ICollection<Route> Routes { get; set; } = new List<Route>();
+
+		public virtual ICollection<Track> Tracks { get; set; } = new List<Track>();
 		#endregion
 	}
 }

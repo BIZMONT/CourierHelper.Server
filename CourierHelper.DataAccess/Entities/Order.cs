@@ -28,6 +28,8 @@ namespace CourierHelper.DataAccess.Entities
         public virtual Courier Courier { get; set; }
 		
         public virtual ActivePoint Destination { get; set; }
+
+		public virtual Track Track { get; set; }
         #endregion
     }
 }

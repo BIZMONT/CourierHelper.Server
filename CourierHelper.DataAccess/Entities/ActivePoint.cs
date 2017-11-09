@@ -35,7 +35,9 @@ namespace CourierHelper.DataAccess.Entities
 
         public virtual Route Route { get; set; }
 
-        public virtual Warehouse Warehouse { get; set; }
+		public virtual Track Track { get; set; }
+
+		public virtual Warehouse Warehouse { get; set; }
         #endregion
     }
 

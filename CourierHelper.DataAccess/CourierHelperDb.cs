@@ -20,7 +20,8 @@ namespace CourierHelper.DataAccess
             CustomersRepo = new CustomersRepository(_context);
             RoutesRepo = new RoutesRepository(_context);
             ActivePointsRepo = new ActivePointsRepository(_context);
-        }
+			TracksRepo = new TracksRepository(_context);
+		}
 
         #region Repositories
         public IRepository<Order> OrdersRepo { get; private set; }
@@ -29,9 +30,10 @@ namespace CourierHelper.DataAccess
         public IRepository<Customer> CustomersRepo { get; private set; }
         public IRepository<Route> RoutesRepo { get; private set; }
         public IRepository<ActivePoint> ActivePointsRepo { get; private set; }
-        #endregion
+		public IRepository<Track>TracksRepo { get; private set; }
+		#endregion
 
-        public void Save()
+		public void Save()
         {
             _context.SaveChanges();
         }

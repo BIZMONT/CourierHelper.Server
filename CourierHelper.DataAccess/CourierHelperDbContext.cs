@@ -11,6 +11,7 @@ namespace CourierHelper.DataAccess
 		public DbSet<Warehouse> Warehouses { get; set; }
 		public DbSet<Customer> Customers { get; set; }
 		public DbSet<Route> Routes { get; set; }
+		public DbSet<Track> Tracks { get; set; }
 		public DbSet<ActivePoint> ActivePoints { get; set; }
 
 		public CourierHelperDbContext(string connectionString) : base(connectionString) { }
@@ -40,6 +41,10 @@ namespace CourierHelper.DataAccess
 			modelBuilder.Entity<Courier>()
 				.HasMany(c => c.Routes)
 				.WithRequired(r => r.Courier);
+
+			modelBuilder.Entity<Courier>()
+				.HasMany(c => c.Tracks)
+				.WithRequired(t => t.Courier);
 			#endregion
 
 			#region Order relations
@@ -60,6 +65,10 @@ namespace CourierHelper.DataAccess
 			modelBuilder.Entity<Order>()
 				.HasRequired(o => o.Destination)
 				.WithOptional(ap => ap.Order);
+
+			modelBuilder.Entity<Order>()
+				.HasOptional(o => o.Track)
+				.WithOptionalDependent(t => t.Order);
 			#endregion
 
 			#region Warehouse relations
@@ -72,6 +81,10 @@ namespace CourierHelper.DataAccess
 			modelBuilder.Entity<Route>()
 				.HasMany(r => r.Points)
 				.WithOptional(ap => ap.Route);
+
+			modelBuilder.Entity<Track>()
+				.HasMany(t => t.Points)
+				.WithOptional(ap => ap.Track);
 			#endregion
 
 			base.OnModelCreating(modelBuilder);

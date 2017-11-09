@@ -55,12 +55,14 @@
     <Compile Include="Entities\Configurations\CourierEntityConfiguration.cs" />
     <Compile Include="Entities\Configurations\CustomerEntityConfiguration.cs" />
     <Compile Include="Entities\Configurations\OrderEntityConfiguration.cs" />
+    <Compile Include="Entities\Configurations\TrackEntityConfiguration.cs" />
     <Compile Include="Entities\Configurations\RouteEntityConfiguration.cs" />
     <Compile Include="Entities\Configurations\WarehouseEntityConfiguration.cs" />
     <Compile Include="Entities\Courier.cs" />
     <Compile Include="Entities\Customer.cs" />
     <Compile Include="Entities\Order.cs" />
     <Compile Include="Entities\Route.cs" />
+    <Compile Include="Entities\Track.cs" />
     <Compile Include="Entities\Warehouse.cs" />
     <Compile Include="Enums\CourierState.cs" />
     <Compile Include="Enums\OrderState.cs" />
@@ -69,6 +71,7 @@
     <Compile Include="Repositories\CouriersRepository.cs" />
     <Compile Include="Repositories\CustomersRepository.cs" />
     <Compile Include="Repositories\OrdersRepository.cs" />
+    <Compile Include="Repositories\TracksRepository.cs" />
     <Compile Include="Repositories\RoutesRepository.cs" />
     <Compile Include="Repositories\WarehousesRepository.cs" />
   </ItemGroup>
