@@ -13,7 +13,10 @@ namespace CourierHelper.DataAccess.Entities
 
         public string PhoneNumber { get; set; }
         public string Email { get; set; }
+		public string Address { get; set; }
 
+		public DateTime? Created { get; set; } = DateTime.Now;
+		public DateTime? Edited { get; set; } = DateTime.Now;
 		public DateTime? Deleted { get; set; }
 
 

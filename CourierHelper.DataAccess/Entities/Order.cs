@@ -8,7 +8,12 @@ namespace CourierHelper.DataAccess.Entities
         public long Id { get; set; }
 
         public OrderState State { get; set; }
+		public string Address { get; set; }
+		public string Content { get; set; }
+		public string Comment { get; set; }
 
+		public DateTime? Created { get; set; } = DateTime.Now;
+		public DateTime? Edited { get; set; } = DateTime.Now;
 		public DateTime? Deleted { get; set; }
 
 

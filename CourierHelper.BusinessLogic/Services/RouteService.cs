@@ -121,5 +121,26 @@ namespace CourierHelper.BusinessLogic.Services
 				await db.SaveAsync();
 			}
 		}
+
+		public RouteDto GetCourieRemainingRoute(Guid courierId)
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				Courier courier = db.CouriersRepo.Get(courierId);
+				if (courier == null)
+				{
+					throw new ArgumentException(); //todo: exception
+				}
+
+				if (courier.State < CourierState.PerformsDelivery)
+				{
+					throw new Exception(); //todo: exception
+				}
+
+				Route currentRoute = courier.Routes.Single(r => r.IsCurrent);
+
+				return null; //todo: add logic for getting remaining route
+			}
+		}
 	}
 }

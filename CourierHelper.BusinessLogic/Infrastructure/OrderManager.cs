@@ -104,7 +104,7 @@ namespace CourierHelper.BusinessLogic.Infrastructure
 				candidates.Add(optimizedRoute.Distance - currentRoute.Distance, optimizedRoute);
 			}
 
-			return candidates.First().Value;
+			return candidates.FirstOrDefault().Value;
 		}
 	}
 }

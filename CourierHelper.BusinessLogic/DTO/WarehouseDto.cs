@@ -13,7 +13,9 @@ namespace CourierHelper.BusinessLogic.DTO
 		public string Name { get; set; }
 		public string Address { get; set; }
 
-		public PointDto Location { get; set; }
+		public DateTime? Created { get; set; }
+		public DateTime? Edited { get; set; }
 
+		public PointDto Location { get; set; }
 	}
 }

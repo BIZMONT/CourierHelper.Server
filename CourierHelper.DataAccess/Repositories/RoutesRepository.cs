@@ -27,7 +27,8 @@ namespace CourierHelper.DataAccess.Repositories
         public void Create(Route entity)
         {
 			entity.Created = DateTime.Now;
-            _dbContext.Routes.Add(entity);
+			entity.Edited = DateTime.Now;
+			_dbContext.Routes.Add(entity);
         }
 
         public void Delete(Route entity)
@@ -57,6 +58,7 @@ namespace CourierHelper.DataAccess.Repositories
 
         public void Update(Route entity)
         {
+			entity.Edited = DateTime.Now;
             _dbContext.Entry(entity).State = EntityState.Modified;
         }
     }

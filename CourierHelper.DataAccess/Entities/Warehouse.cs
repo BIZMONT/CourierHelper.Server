@@ -10,6 +10,8 @@ namespace CourierHelper.DataAccess.Entities
 		public string Name { get; set; }
 		public string Address { get; set; }
 
+		public DateTime? Created { get; set; } = DateTime.Now;
+		public DateTime? Edited { get; set; } = DateTime.Now;
 		public DateTime? Deleted { get; set; }
 
 

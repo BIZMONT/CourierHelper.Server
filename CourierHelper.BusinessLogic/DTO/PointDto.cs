@@ -19,6 +19,10 @@ namespace CourierHelper.BusinessLogic.DTO
 
 		public double Longitude { get; set; }
 		public double Latitude { get; set; }
+		public double Radius { get; set; }
+
+		public DateTime? Created { get; set; }
+		public DateTime? Edited { get; set; }
 
 		public PointDto After { get; set; }
 

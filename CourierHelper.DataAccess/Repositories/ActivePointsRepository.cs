@@ -1,5 +1,6 @@
 ﻿using CourierHelper.DataAccess.Abstract;
 using CourierHelper.DataAccess.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -25,7 +26,9 @@ namespace CourierHelper.DataAccess.Repositories
 
         public void Create(ActivePoint entity)
         {
-            _dbContext.ActivePoints.Add(entity);
+			entity.Created = DateTime.Now;
+			entity.Edited = DateTime.Now;
+			_dbContext.ActivePoints.Add(entity);
         }
 
         public void Delete(ActivePoint entity)
@@ -55,6 +58,7 @@ namespace CourierHelper.DataAccess.Repositories
 
         public void Update(ActivePoint entity)
         {
+			entity.Edited = DateTime.Now;
             _dbContext.Entry(entity).State = EntityState.Modified;
         }
     }

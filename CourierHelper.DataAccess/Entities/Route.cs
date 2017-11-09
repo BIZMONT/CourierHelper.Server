@@ -10,7 +10,8 @@ namespace CourierHelper.DataAccess.Entities
 		public bool IsCurrent { get; set; }
 		public double Distance { get; set; }
 
-		public DateTime? Created { get; set; }
+		public DateTime? Created { get; set; } = DateTime.Now;
+		public DateTime? Edited { get; set; } = DateTime.Now;
 		public DateTime? Completed { get; set; }
 
         #region Relations

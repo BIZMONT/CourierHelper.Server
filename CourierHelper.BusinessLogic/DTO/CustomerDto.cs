@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CourierHelper.BusinessLogic.DTO
 {
@@ -16,5 +12,9 @@ namespace CourierHelper.BusinessLogic.DTO
 
 		public string PhoneNumber { get; set; }
 		public string Email { get; set; }
+		public string Address { get; set; }
+
+		public DateTime? Created { get; set; }
+		public DateTime? Edited { get; set; }
 	}
 }

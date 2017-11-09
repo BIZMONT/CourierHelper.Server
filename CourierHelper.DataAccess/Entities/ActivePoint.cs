@@ -7,7 +7,11 @@ namespace CourierHelper.DataAccess.Entities
     {
         public Guid Id { get; set; }
 
-        public DbGeography _Coordinates { get; set; }
+		public DateTime? Created { get; set; } = DateTime.Now;
+		public DateTime? Edited { get; set; } = DateTime.Now;
+
+		public DbGeography _Coordinates { get; set; }
+		public double Radius { get; set; }
 
         public Point Coordinates
         {

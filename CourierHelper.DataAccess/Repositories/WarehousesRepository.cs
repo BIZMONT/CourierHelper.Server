@@ -23,7 +23,9 @@ namespace CourierHelper.DataAccess.Repositories
 
         public void Create(Warehouse entity)
         {
-            _dbContext.Warehouses.Add(entity);
+			entity.Created = DateTime.Now;
+			entity.Edited = DateTime.Now;
+			_dbContext.Warehouses.Add(entity);
         }
 
         public void Delete(Warehouse entity)
@@ -55,6 +57,7 @@ namespace CourierHelper.DataAccess.Repositories
 
         public void Update(Warehouse entity)
         {
+			entity.Edited = DateTime.Now;
             _dbContext.Entry(entity).State = EntityState.Modified;
         }
     }

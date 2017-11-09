@@ -13,6 +13,9 @@ namespace CourierHelper.BusinessLogic.DTO
 		public long Id { get; set; }
 
 		public OrderStateDto State { get; set; }
+		public string Address { get; set; }
+		public string Content { get; set; }
+		public string Comment { get; set; }
 
 		public CustomerDto Sender { get; set; }
 		public CustomerDto Receiver { get; set; }

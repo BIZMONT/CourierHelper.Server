@@ -17,6 +17,8 @@ namespace CourierHelper.DataAccess.Entities
 
         public CourierState State { get; set; }
 
+		public DateTime? Created { get; set; } = DateTime.Now;
+		public DateTime? Edited { get; set; }  = DateTime.Now;
 		public DateTime? Deleted { get; set; }
 
 

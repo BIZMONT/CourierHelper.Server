@@ -14,6 +14,7 @@ namespace CourierHelper.BusinessLogic.DTO
 		public bool IsCurrent { get; set; }
 
 		public DateTime? Created { get; set; }
+		public DateTime? Edited { get; set; }
 		public DateTime? Completed { get; set; }
 
 		public List<PointDto> Points { get; set; }

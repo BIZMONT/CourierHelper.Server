@@ -167,7 +167,7 @@ namespace CourierHelper.BusinessLogic.Services
 			using (var db = new CourierHelperDb(_connectionString))
 			{
 				var nearestPoints = db.ActivePointsRepo.Query
-					.Where(point => (point.Courier != null && point.Courier.Deleted != null) || point.Route != null)
+					.Where(point => (point.Courier != null && point.Courier.Deleted == null) || point.Route != null)
 					.AsEnumerable()
 					.OrderBy(point => point.Coordinates.Distance(new Point(pointDto.Longitude, pointDto.Latitude)))
 					.ToList();

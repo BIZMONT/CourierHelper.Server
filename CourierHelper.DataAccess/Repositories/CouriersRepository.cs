@@ -26,7 +26,9 @@ namespace CourierHelper.DataAccess.Repositories
 
         public void Create(Courier entity)
         {
-            _dbContext.Couriers.Add(entity);
+			entity.Created = DateTime.Now;
+			entity.Edited = DateTime.Now;
+			_dbContext.Couriers.Add(entity);
         }
 
         public void Delete(Courier entity)
@@ -58,6 +60,7 @@ namespace CourierHelper.DataAccess.Repositories
 
         public void Update(Courier entity)
         {
+			entity.Edited = DateTime.Now;
             _dbContext.Entry(entity).State = EntityState.Modified;
         }
     }
