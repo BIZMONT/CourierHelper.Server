@@ -18,10 +18,12 @@ namespace CourierHelper.Web.Controllers
 			string dbConnection = ConfigurationManager.ConnectionStrings["CourierHelperDb"].ConnectionString;
 			CourierService = new CourierService(dbConnection);
 			RouteService = new RouteService(dbConnection);
+			OrderService = new OrderService(dbConnection);
 		}
 
 		protected CourierService CourierService { get; private set; }
 		protected RouteService RouteService { get; private set; }
+		protected OrderService OrderService { get; private set; }
 
 		[HttpPost]
 		[Route("courier/{courierId}/location")]
@@ -33,18 +35,34 @@ namespace CourierHelper.Web.Controllers
 
 		[HttpGet]
 		[Route("courier/{courierId}/orders/sync")]
-		public IHttpActionResult SyncOrders(Guid courierId)
+		public async Task<IHttpActionResult> SyncOrders(Guid courierId)
 		{
-			//todo: get changed or new orders
-			return Ok();
+			IList<OrderDto> orders = await OrderService.SyncOrders(courierId);
+
+			if(orders.Count > 0)
+			{
+				return Ok(orders);
+			}
+			else
+			{
+				return StatusCode(HttpStatusCode.NotModified);
+			}
 		}
 
-		[HttpGet]
+		[HttpPost]
 		[Route("courier/{courierId}/routes/sync")]
-		public IHttpActionResult SyncRoutes(Guid courierId)
+		public async Task<IHttpActionResult> SyncRoutes(Guid courierId)
 		{
-			//todo: get changed or new orders
-			return Ok();
+			RouteDto route = await RouteService.SyncRoute(courierId);
+
+			if (route != null)
+			{
+				return Ok(route);
+			}
+			else
+			{
+				return StatusCode(HttpStatusCode.NotModified);
+			}
 		}
 
 		[HttpPost]

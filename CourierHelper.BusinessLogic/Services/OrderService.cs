@@ -146,6 +146,33 @@ namespace CourierHelper.BusinessLogic.Services
 			}
 		}
 
+		public async Task<List<OrderDto>> SyncOrders(Guid courierId)
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				Courier courier = db.CouriersRepo.Get(courierId);
+
+				if(courier == null)
+				{
+					throw new Exception(); //todo: exception
+				}
+
+				List<Order> notSyncedOrders = courier.Orders.Where(o => o.Synced == null || o.Edited > o.Synced).ToList();
+
+				foreach (var order in notSyncedOrders)
+				{
+					order.Synced = DateTime.Now;
+					db.OrdersRepo.Update(order);
+				}
+
+				await db.SaveAsync();
+
+				List<OrderDto> notSyncedOrdersDto = Mapper.Map<List<OrderDto>>(notSyncedOrders);
+
+				return notSyncedOrdersDto;
+			}
+		}
+
 		public async Task ChangeOrderStateAsync(OrderDto orderDto, OrderStateDto state)
 		{
 			using (var db = new CourierHelperDb(_connectionString))

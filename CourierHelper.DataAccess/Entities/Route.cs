@@ -13,6 +13,7 @@ namespace CourierHelper.DataAccess.Entities
 		public DateTime? Created { get; set; } = DateTime.Now;
 		public DateTime? Edited { get; set; } = DateTime.Now;
 		public DateTime? Completed { get; set; }
+		public DateTime? Synced { get; set; }
 
         #region Relations
         public virtual ICollection<ActivePoint> Points { get; set; } = new List<ActivePoint>();

@@ -15,10 +15,11 @@ namespace CourierHelper.DataAccess.Entities
 		public DateTime? Created { get; set; } = DateTime.Now;
 		public DateTime? Edited { get; set; } = DateTime.Now;
 		public DateTime? Deleted { get; set; }
+		public DateTime? Synced { get; set; }
 
 
-        #region Relations
-        public virtual Customer Sender { get; set; }
+		#region Relations
+		public virtual Customer Sender { get; set; }
 
 		public virtual Customer Receiver { get; set; }
 		

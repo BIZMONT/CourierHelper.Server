@@ -38,6 +38,8 @@ namespace CourierHelper.BusinessLogic.Services
 				Route route = new Route
 				{
 					Created = DateTime.Now,
+					Edited = DateTime.Now,
+					Synced = DateTime.Now,
 					IsCurrent = true,
 					Distance = newCurrentRoute.Distance
 				};
@@ -140,6 +142,31 @@ namespace CourierHelper.BusinessLogic.Services
 				Route currentRoute = courier.Routes.Single(r => r.IsCurrent);
 
 				return null; //todo: add logic for getting remaining route
+			}
+		}
+
+		public async Task<RouteDto> SyncRoute(Guid courierId)
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				Courier courier = db.CouriersRepo.Get(courierId);
+
+				if (courier == null)
+				{
+					throw new Exception(); //todo: exception
+				}
+
+				Route notSyncedRoute = courier.Routes.Single(r => r.IsCurrent && (r.Synced == null || r.Edited > r.Synced));
+
+				notSyncedRoute.Synced = DateTime.Now;
+
+				db.RoutesRepo.Update(notSyncedRoute);
+
+				await db.SaveAsync();
+
+				RouteDto notSyncedRouteDto = Mapper.Map<RouteDto>(notSyncedRoute);
+
+				return notSyncedRouteDto;
 			}
 		}
 	}
