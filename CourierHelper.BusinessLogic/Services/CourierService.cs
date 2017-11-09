@@ -67,12 +67,14 @@ namespace CourierHelper.BusinessLogic.Services
 			{
 				Courier courier = db.CouriersRepo.Get(courierId);
 
-				if(courier == null)
+				if (courier == null)
 				{
 					throw new ArgumentException($"Can`t find courier with id {courierId}");
 				}
 
 				courier.Location.Coordinates = new Point(newLocation.Longitude, newLocation.Latitude);
+
+				SetState(courier);
 
 				db.CouriersRepo.Update(courier);
 
@@ -112,7 +114,7 @@ namespace CourierHelper.BusinessLogic.Services
 
 				var route = courier.Routes.FirstOrDefault(r => r.IsCurrent);
 
-				if(route == null)
+				if (route == null)
 				{
 					throw new Exception(); //todo: exception
 				}
@@ -214,6 +216,48 @@ namespace CourierHelper.BusinessLogic.Services
 				db.CouriersRepo.Update(courier);
 
 				await db.SaveAsync();
+			}
+		}
+
+		private void SetState(Courier courier)
+		{
+			IEnumerable<Order> orders = courier.Orders.ToList();
+
+			Order currentOrder = orders
+				.Where(o => o.State == OrderState.Fulfillment)
+				.Where(o => o.Destination._Coordinates.Distance(courier.Location.Coordinates.Geography).Value < o.Destination.Radius)
+				.FirstOrDefault();
+
+			if (currentOrder != null)
+			{
+				courier.State = CourierState.AtDestinationPoint;
+				return;
+			}
+
+			if (orders.Any(o => o.State == OrderState.Fulfillment))
+			{
+				courier.State = CourierState.PerformsDelivery;
+				return;
+			}
+
+			Warehouse warehouse = orders
+				.Where(o => o.State == OrderState.WaitingOnWarehouse)
+				.Where(o => o.Warehouse.Location._Coordinates.Distance(courier.Location.Coordinates.Geography).Value < o.Warehouse.Location.Radius)
+				.Select(o => o.Warehouse)
+				.FirstOrDefault();
+
+			if (warehouse != null)
+			{
+				courier.State = CourierState.OnWarehouse;
+				return;
+			}
+		}
+
+		private void ChangeTrack(Courier courier)
+		{
+			if(courier.State > CourierState.Idle)
+			{
+				//todo: add point ot track
 			}
 		}
 	}
