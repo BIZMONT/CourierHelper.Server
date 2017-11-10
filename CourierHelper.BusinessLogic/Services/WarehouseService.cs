@@ -48,11 +48,23 @@ namespace CourierHelper.BusinessLogic.Services
 			}
 		}
 
+		public List<WarehouseDto> GetAll()
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				List<Warehouse> warehouses = db.WarehousesRepo.GetAll().ToList();
+
+				List<WarehouseDto> warehousesDto = Mapper.Map<List<WarehouseDto>>(warehouses);
+
+				return warehousesDto;
+			}
+		}
+
 		public WarehouseDto GetById(int warehouseId)
 		{
 			using (var db = new CourierHelperDb(_connectionString))
 			{
-				Warehouse warehouse = db.WarehousesRepo.Query.FirstOrDefault(w => w.Id == warehouseId);
+				Warehouse warehouse = db.WarehousesRepo.Get(warehouseId);
 
 				WarehouseDto warehouseDto = Mapper.Map<WarehouseDto>(warehouse);
 
@@ -69,9 +81,9 @@ namespace CourierHelper.BusinessLogic.Services
 					throw new ArgumentException("Warehouse location is required!");
 				}
 
-				Warehouse warehouse = db.WarehousesRepo.Query.FirstOrDefault(w => w.Id == warehouseDto.Id);
+				Warehouse warehouse = db.WarehousesRepo.Get(warehouseDto.Id);
 
-				if(warehouse == null)
+				if (warehouse == null)
 				{
 					throw new ArgumentOutOfRangeException(""); //todo: make better exception
 				}
