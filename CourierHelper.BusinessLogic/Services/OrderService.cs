@@ -145,6 +145,18 @@ namespace CourierHelper.BusinessLogic.Services
 			}
 		}
 
+		public List<OrderDto> GetAll()
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				List<Order> orders = db.OrdersRepo.GetAll().ToList();
+
+				List<OrderDto> ordersDto = Mapper.Map<List<OrderDto>>(orders);
+
+				return ordersDto;
+			}
+		}
+
 		public OrderDto GetOrderById(long orderId)
 		{
 			using (var db = new CourierHelperDb(_connectionString))
@@ -154,6 +166,18 @@ namespace CourierHelper.BusinessLogic.Services
 				OrderDto orderDto = Mapper.Map<OrderDto>(order);
 
 				return orderDto;
+			}
+		}
+
+		public List<OrderDto> GetOrdersByState(OrderStateDto state)
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				List<Order> orders = db.OrdersRepo.Query.Where(o => o.State == (OrderState)state).ToList();
+
+				List<OrderDto> ordersDto = Mapper.Map<List<OrderDto>>(orders);
+
+				return ordersDto;
 			}
 		}
 
