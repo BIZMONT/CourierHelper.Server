@@ -12,7 +12,7 @@ using System.Web.Http;
 
 namespace CourierHelper.Web.Controllers
 {
-	[RoutePrefix("api/courier/{courierId}")]
+	[RoutePrefix("api/couriers")]
 	public class CourierController : ApiController
 	{
 		public CourierController()
@@ -27,8 +27,28 @@ namespace CourierHelper.Web.Controllers
 		protected RouteService RouteService { get; private set; }
 		protected OrderService OrderService { get; private set; }
 
+		#region CRUD
+		[HttpGet]
+		public IHttpActionResult GetAll()
+		{
+			List<CourierDto> couriers =  CourierService.GetAllCouriers();
+
+			return Ok(couriers);
+		}
+
+		[HttpGet]
+		[Route("{courierId}")]
+		public IHttpActionResult GetById(Guid courierId)
+		{
+			CourierDto courier = CourierService.GetCourierById(courierId);
+
+			return Ok(courier);
+		}
+		#endregion
+
+		#region Main flow
 		[HttpPost]
-		[Route("location")]
+		[Route("{courierId}/location")]
 		public async Task<IHttpActionResult> UpdateLocation(Guid courierId, [FromBody]PointDto location)
 		{
 			await CourierService.ChangeCourierLocationAsync(courierId, location);
@@ -36,7 +56,7 @@ namespace CourierHelper.Web.Controllers
 		}
 
 		[HttpPost]
-		[Route("orders/sync")]
+		[Route("{courierId}/orders/sync")]
 		public async Task<IHttpActionResult> SyncOrders(Guid courierId)
 		{
 			IList<OrderDto> orders = await OrderService.SyncOrders(courierId);
@@ -52,7 +72,7 @@ namespace CourierHelper.Web.Controllers
 		}
 
 		[HttpPost]
-		[Route("orders/take")]
+		[Route("{courierId}/orders/take")]
 		public async Task<IHttpActionResult> TakeOrder(Guid courierId, OrderDto orderDto)
 		{
 			await OrderService.ChangeOrderStateAsync(orderDto, OrderStateDto.Fulfillment);
@@ -60,7 +80,7 @@ namespace CourierHelper.Web.Controllers
 		}
 
 		[HttpPost]
-		[Route("orders/{orderId}/complete")]
+		[Route("{courierId}/orders/{orderId}/complete")]
 		public async Task<IHttpActionResult> CompleteOrder(Guid courierId, long orderId)
 		{
 			await OrderService.CompleteAsync(courierId, orderId);
@@ -68,7 +88,7 @@ namespace CourierHelper.Web.Controllers
 		}
 
 		[HttpPost]
-		[Route("routes/sync")]
+		[Route("{courierId}/routes/sync")]
 		public async Task<IHttpActionResult> SyncRoutes(Guid courierId)
 		{
 			RouteDto route = await RouteService.SyncRoute(courierId);
@@ -84,7 +104,7 @@ namespace CourierHelper.Web.Controllers
 		}
 
 		[HttpPost]
-		[Route("delivery")]
+		[Route("{courierId}/delivery")]
 		public async Task<IHttpActionResult> StartDelivery(Guid courierId, DeliveryDto delivery)
 		{
 			foreach (var order in delivery.Orders)
@@ -97,5 +117,6 @@ namespace CourierHelper.Web.Controllers
 
 			return Ok();
 		}
+		#endregion
 	}
 }
