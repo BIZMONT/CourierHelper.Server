@@ -100,7 +100,50 @@ namespace CourierHelper.BusinessLogic.Services
 
 				return order.Id;
 			}
-		}       //todo: this method maybe need refactoring
+		}
+
+		public async Task CompleteAsync(Guid courierId, long orderId)
+		{
+			using (var db = new CourierHelperDb(_connectionString))
+			{
+				Courier courier = db.CouriersRepo.Get(courierId);
+
+				if(courier == null)
+				{
+					throw new Exception();//todo: exception
+				}
+
+				Order order = courier.Orders.SingleOrDefault(o => o.Id == orderId);
+
+				if(order == null)
+				{
+					throw new Exception("The courier does not have this order");
+				}
+
+				Track currentTrack = courier.Tracks.Single(t => t.IsCurrent);
+				currentTrack.IsCurrent = false;
+				db.TracksRepo.Update(currentTrack);
+
+				order.State = OrderState.Completed;
+				order.Track = currentTrack;
+				db.OrdersRepo.Update(order);
+
+				if(!courier.Orders.Any(o=>o.State == OrderState.Fulfillment))
+				{
+					Route currentRoute = courier.Routes.SingleOrDefault(r => r.IsCurrent);
+					currentRoute.IsCurrent = false;
+					currentRoute.Completed = DateTime.Now;
+
+					db.RoutesRepo.Update(currentRoute);
+
+					courier.State = CourierState.Idle;
+
+					db.CouriersRepo.Update(courier);
+				}
+
+				await db.SaveAsync();
+			}
+		}
 
 		public OrderDto GetOrderById(long orderId)
 		{

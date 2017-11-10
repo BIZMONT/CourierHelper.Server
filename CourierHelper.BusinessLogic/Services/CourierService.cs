@@ -75,6 +75,7 @@ namespace CourierHelper.BusinessLogic.Services
 				courier.Location.Coordinates = new Point(newLocation.Longitude, newLocation.Latitude);
 
 				SetState(courier);
+				ChangeTrack(courier, db);
 
 				db.CouriersRepo.Update(courier);
 
@@ -193,7 +194,7 @@ namespace CourierHelper.BusinessLogic.Services
 					.Take(count)
 					.ToList();
 
-				var couriersDto = Mapper.Map<List<CourierDto>>(couriers);   //todo: automapper config
+				var couriersDto = Mapper.Map<List<CourierDto>>(couriers);
 
 				return couriersDto;
 			}
@@ -253,11 +254,27 @@ namespace CourierHelper.BusinessLogic.Services
 			}
 		}
 
-		private void ChangeTrack(Courier courier)
+		private void ChangeTrack(Courier courier, CourierHelperDb db)
 		{
-			if(courier.State > CourierState.Idle)
+			if (courier.State > CourierState.Idle)
 			{
-				//todo: add point ot track
+				Track currentTrack = courier.Tracks.FirstOrDefault(t => t.IsCurrent);
+				ActivePoint newPoint = new ActivePoint
+				{
+					Coordinates = new Point(courier.Location.Coordinates.Longitude, courier.Location.Coordinates.Latitude)
+				};
+
+				if (currentTrack == null)
+				{
+					currentTrack = new Track { IsCurrent = true };
+					currentTrack.Points.Add(newPoint);
+					courier.Tracks.Add(currentTrack);
+				}
+				else
+				{
+					currentTrack.Points.Add(newPoint);
+					db.TracksRepo.Update(currentTrack);
+				}
 			}
 		}
 	}

@@ -51,6 +51,7 @@
     <Compile Include="AutomapperConfigurator.cs" />
     <Compile Include="DTO\Courier\CourierDto.cs" />
     <Compile Include="DTO\CustomerDto.cs" />
+    <Compile Include="DTO\DeliveryDto.cs" />
     <Compile Include="DTO\Enums\CourierStateDto.cs" />
     <Compile Include="DTO\Enums\OrderStateDto.cs" />
     <Compile Include="DTO\Order\OrderDto.cs" />

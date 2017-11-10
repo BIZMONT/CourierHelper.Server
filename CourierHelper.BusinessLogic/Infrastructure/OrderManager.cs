@@ -60,8 +60,8 @@ namespace CourierHelper.BusinessLogic.Infrastructure
 
 			if (possibleCandidate != null)
 			{
+				await _orderService.ChangeOrderStateAsync(order, OrderStateDto.WaitingOnWarehouse);
 				await _courierService.AssignOrder(possibleCandidate.Id, order.Id);
-				//todo: add recomended route
 			}
 			else
 			{
@@ -69,11 +69,12 @@ namespace CourierHelper.BusinessLogic.Infrastructure
 
 				if (bestRoute == null)
 				{
+					await _orderService.ChangeOrderStateAsync(order, OrderStateDto.NotAssigned);
 					_ordersQueue.Enqueue(order);
-					//todo: Can`t find best courier
 				}
 				else
 				{
+					await _orderService.ChangeOrderStateAsync(order, OrderStateDto.WaitingOnWarehouse);
 					await _courierService.AssignOrder(bestRoute.Courier.Id, order.Id);
 					await _routeService.ChangeCourierCurrentRouteAsync(bestRoute.Courier.Id, bestRoute.GetRoute());
 				}

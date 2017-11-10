@@ -1,4 +1,5 @@
 ﻿using CourierHelper.BusinessLogic.DTO;
+using CourierHelper.BusinessLogic.DTO.Enums;
 using CourierHelper.BusinessLogic.Services;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,9 @@ using System.Web.Http;
 
 namespace CourierHelper.Web.Controllers
 {
-    public class CourierController : ApiController
-    {
+	[RoutePrefix("api/courier/{courierId}")]
+	public class CourierController : ApiController
+	{
 		public CourierController()
 		{
 			string dbConnection = ConfigurationManager.ConnectionStrings["CourierHelperDb"].ConnectionString;
@@ -26,20 +28,20 @@ namespace CourierHelper.Web.Controllers
 		protected OrderService OrderService { get; private set; }
 
 		[HttpPost]
-		[Route("courier/{courierId}/location")]
+		[Route("location")]
 		public async Task<IHttpActionResult> UpdateLocation(Guid courierId, [FromBody]PointDto location)
 		{
 			await CourierService.ChangeCourierLocationAsync(courierId, location);
 			return Ok();
 		}
 
-		[HttpGet]
-		[Route("courier/{courierId}/orders/sync")]
+		[HttpPost]
+		[Route("orders/sync")]
 		public async Task<IHttpActionResult> SyncOrders(Guid courierId)
 		{
 			IList<OrderDto> orders = await OrderService.SyncOrders(courierId);
 
-			if(orders.Count > 0)
+			if (orders.Count > 0)
 			{
 				return Ok(orders);
 			}
@@ -50,7 +52,23 @@ namespace CourierHelper.Web.Controllers
 		}
 
 		[HttpPost]
-		[Route("courier/{courierId}/routes/sync")]
+		[Route("orders/take")]
+		public async Task<IHttpActionResult> TakeOrder(Guid courierId, OrderDto orderDto)
+		{
+			await OrderService.ChangeOrderStateAsync(orderDto, OrderStateDto.Fulfillment);
+			return Ok();
+		}
+
+		[HttpPost]
+		[Route("orders/{orderId}/complete")]
+		public async Task<IHttpActionResult> CompleteOrder(Guid courierId, long orderId)
+		{
+			await OrderService.CompleteAsync(courierId, orderId);
+			return Ok();
+		}
+
+		[HttpPost]
+		[Route("routes/sync")]
 		public async Task<IHttpActionResult> SyncRoutes(Guid courierId)
 		{
 			RouteDto route = await RouteService.SyncRoute(courierId);
@@ -66,19 +84,17 @@ namespace CourierHelper.Web.Controllers
 		}
 
 		[HttpPost]
-		[Route("courier/{courierId}/orders/{orderId}/complete")]
-		public async Task<IHttpActionResult> CompleteOrder(Guid courierId, long orderId)
+		[Route("delivery")]
+		public async Task<IHttpActionResult> StartDelivery(Guid courierId, DeliveryDto delivery)
 		{
-			//todo: complete order
-			return Ok();
-		}
+			foreach (var order in delivery.Orders)
+			{
+				await OrderService.ChangeOrderStateAsync(order, OrderStateDto.Fulfillment);
+			}
+			await RouteService.AddRouteAsync(courierId, delivery.Route);
 
-		[HttpPost]
-		[Route("courier/{courierId}/routes")]
-		public async Task<IHttpActionResult> StartRoute(Guid courierId, RouteDto route, IEnumerable<OrderDto> orders)
-		{
-			//todo: add logic for new route with orders
-			await RouteService.AddRouteAsync(courierId, route);
+			await CourierService.ChangeCourierStateAsync(courierId, CourierStateDto.PerformsDelivery);
+
 			return Ok();
 		}
 	}
